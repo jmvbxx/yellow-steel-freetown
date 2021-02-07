@@ -6,10 +6,6 @@
 1. Use proper object orientation, abstraction and design patterns.
 1. Your application should run as a CLI (command line interface). It should flow like a text based game. An in-memory data store is fine. The player should be able to play as many missions as they would like. At the end of each mission, you should output a summary of the mission. At the end of all missions, output the final summary.
 
-## What to Expect After You Submit
-
-Our team will be notified and review your submission within 3 business days. We will check the output, quality of the code, documentation, ease of maintenance, and performance of the solution. We know your time is valuable and appreciate you taking the time to complete this assignment. *If any questions come up, please send an email to your Doximity point of contact.*
-
 ## Your Mission
 
 _Your mission, should you choose to accept it, is to launch the rocket into low earth orbit._
