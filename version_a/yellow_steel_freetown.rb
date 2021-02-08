@@ -3,9 +3,11 @@ PAYLOAD_CAPACITY = 50_000   # kilgrams including the rocket itself
 FUEL_CAPACITY = 1_514_100   # liters of fuel, already included in the payload total
 BURN_RATE = 168_233         # liters per minute
 AVERAGE_SPEED = 1_500       # kilometers/hr
+SECONDS_PER_HOURS = 3_600
 
 loop do
-  random_seed = rand(1..100)
+  # random_seed = rand(1..100)
+  random_seed = 11
 
   puts 'Welcome to yellow-steel-freetown!'
   puts 'Mission plan:'
@@ -51,26 +53,32 @@ loop do
     break
   end
 
-  # loop do
-  #   travel_distance = 0
-  #   current_speed = rand(1400..1600).to_f
-  #   current_distance_traveled = current_speed / 3600 * 30
-  #   time_to_destination = TRAVEL_DISTANCE.to_f / AVERAGE_SPEED * 3600
-  #
-  #   total_distance_traveled = 0
-  #
-  #   while total_distance_traveled < 160
-  #     puts 'Mission status:'
-  #     puts "  Current fuel burn rate: #{BURN_RATE} liters/min"
-  #     puts "  Current speed: #{current_speed} km/h"
-  #     puts "  Elapsed time: 30 seconds"
-  #     puts "  Current distance traveled: #{current_distance_traveled} km"
-  #     puts "  Time to destination: #{time_to_destination} seconds"
-  #     total_distance_traveled += current_distance_traveled
-  #   end
-  #
-  #   break
-  # end
+  loop do
+
+    mission_time = 0
+    total_distance_traveled = 0
+
+    while total_distance_traveled <= TRAVEL_DISTANCE
+      mission_time += 30
+      current_speed = rand(1400..1600).to_f
+      current_distance_traveled = current_speed / SECONDS_PER_HOURS * mission_time
+      total_distance_traveled += current_distance_traveled
+      time_to_destination = (TRAVEL_DISTANCE.to_f / AVERAGE_SPEED * SECONDS_PER_HOURS) - mission_time
+
+      puts 'Mission status:'
+      puts "  Current fuel burn rate: #{BURN_RATE} liters/min"
+      puts "  Current speed: #{current_speed} km/h"
+      puts "  Elapsed time: #{mission_time} seconds"
+      puts "  Current distance traveled: #{total_distance_traveled.round(2)} km"
+      puts "  Time to destination: #{time_to_destination.round(2)} seconds"
+    end
+
+    break
+  end
+
+  print 'Do you wish to continue? (Y/n) '
+  continue = gets.chomp
+  break unless continue.downcase.start_with?('y')
 
 end
 
