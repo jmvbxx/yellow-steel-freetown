@@ -6,7 +6,7 @@ AVERAGE_SPEED = 1_500       # kilometers/hr
 SECONDS_PER_HOURS = 3_600
 
 loop do
-  # random_seed = rand(1..100)
+  # random_seed = rand(1..90)
   random_seed = 11
 
   puts 'Welcome to yellow-steel-freetown!'
@@ -22,12 +22,10 @@ loop do
   mission_name = gets
 
   print 'Would you like to proceed? (Y/n) '
-  proceed = gets.chomp
-  break unless proceed.downcase.start_with?('y')
+  break unless gets.chomp.downcase.start_with?('y')
 
   print 'Engage afterburner? (Y/n) '
-  afterburner = gets.chomp
-  break unless afterburner.downcase.start_with?('y')
+  break unless gets.chomp.downcase.start_with?('y')
   puts 'Afterburner engaged!'
   if random_seed % 3 == 0
     puts 'Mission aborted!'
@@ -35,18 +33,15 @@ loop do
   end
 
   print 'Release support structures? (Y/n) '
-  release = gets.chomp
-  break unless release.downcase.start_with?('y')
+  break unless gets.chomp.downcase.start_with?('y')
   puts 'Support structures released!'
 
   print 'Perform cross-checks? (Y/n) '
-  cross_checks = gets.chomp
-  break unless cross_checks.downcase.start_with?('y')
+  break unless gets.chomp.downcase.start_with?('y')
   puts 'Cross-checks performed!'
 
   print 'Launch? (Y/n) '
-  launch = gets.chomp
-  break unless launch.downcase.start_with?('y')
+  break unless gets.chomp.downcase.start_with?('y')
   puts 'Launched!'
 
   if random_seed % 5 == 0
@@ -75,10 +70,16 @@ loop do
     print 'Do you wish to continue? (Y/n) '
     continue = gets.chomp
     count += 1
-    unless continue.downcase.start_with?('y')
+    if continue.downcase.start_with?('y')
+      mission_time = 0
+      total_distance_traveled = 0
       puts "Number of tries: #{count}"
+    else
+      puts "Mission time: #{mission_time}"
+      puts "Total distance traveled: #{total_distance_traveled.round(2)}"
       break
     end
-    break
   end
+  puts "Will this be reached?"
+  break
 end
