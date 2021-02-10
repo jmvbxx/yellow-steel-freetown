@@ -73,8 +73,8 @@ loop do
     if continue.downcase.start_with?('y')
       mission_time = 0
       total_distance_traveled = 0
-      puts "Number of tries: #{count}"
     else
+      puts "Number of tries: #{count}"
       puts "Mission time: #{mission_time}"
       puts "Total distance traveled: #{total_distance_traveled.round(2)}"
       break
