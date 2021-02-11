@@ -28,6 +28,10 @@ class Mission
     @aborted = true unless gets.chomp.downcase.start_with?('y')
   end
 
+  def one_in_n(n)
+    (1..n).to_a.sample == 1
+  end
+
   def prelaunch_sequence
     engage_afterburner
     release_support_structures
@@ -38,8 +42,26 @@ class Mission
   def engage_afterburner
     return unless continue? && prompt_user('Engage afterburner?')
     puts 'Afterburner engaged!'
-    if random_seed % 3 == 0
+    if one_in_n(3)
       puts 'Mission aborted!'
+      @aborted = true
+    end
+  end
+
+  def release_support_structures
+    return unless continue? && prompt_user('Release support structures?')
+    puts 'Support structures released!'
+  end
+
+  def perform_cross_checks
+    return unless continue? && prompt_user('Perform cross-checks?')
+    puts 'Cross-checks performed!'
+  end
+
+  def launch
+    return unless continue? && prompt_user('Launch?')
+    if one_in_n(5)
+      puts 'Your rocket exploded!'
     end
   end
 
