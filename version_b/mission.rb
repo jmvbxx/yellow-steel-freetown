@@ -6,21 +6,22 @@ class Mission
   AVERAGE_SPEED = 1_500       # kilometers/hr
   SECONDS_PER_HOURS = 3_600
 
-  attr_reader :elapsed_time, :distance_traveled
+  attr_reader :elapsed_time, :distance_traveled, :aborted, :exploded
 
   def initialize(name)
-    @name = name
+    @name = name # this does not appear to be used
     @elapsed_time = 0
     @distance_traveled = 0
     @aborted = false
+    @exploded = false
   end
 
-  def aborted?
-    @aborted
+  def failed?
+    aborted || exploded
   end
 
   def continue?
-    !aborted?
+    !failed?
   end
 
   def prompt_user(prompt)
@@ -62,6 +63,7 @@ class Mission
     return unless continue? && prompt_user('Launch?')
     if one_in_n(5)
       puts 'Your rocket exploded!'
+      @exploded = true
     end
   end
 
