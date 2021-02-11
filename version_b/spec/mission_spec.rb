@@ -7,5 +7,8 @@ RSpec.describe Mission, "#initialize" do
       mission = Mission.new(name)
       expect(mission.elapsed_time).to eq 0
     end
+    it "starts with no distance traveled" do
+      expect(Mission.new('Minerva').distance_traveled).to eq 0
+    end
   end
 end
