@@ -26,7 +26,8 @@ class Mission
 
   def prompt_user(prompt)
     print "#{prompt} (Y/n) "
-    @aborted = true unless gets.chomp.downcase.start_with?('y')
+    @aborted = !gets.chomp.downcase.start_with?('y')
+    !@aborted
   end
 
   def one_in_n(n)
@@ -42,10 +43,11 @@ class Mission
 
   def engage_afterburner
     return unless continue? && prompt_user('Engage afterburner?')
-    puts 'Afterburner engaged!'
     if one_in_n(3)
       puts 'Mission aborted!'
       @aborted = true
+    else
+      puts 'Afterburner engaged!'
     end
   end
 
@@ -64,8 +66,27 @@ class Mission
     if one_in_n(5)
       puts 'Your rocket exploded!'
       @exploded = true
+    else
+      total_distance_traveled = 0
+      while total_distance_traveled <= TRAVEL_DISTANCE
+        @elapsed_time += 15
+        total_distance_traveled += current_distance_traveled
+        time_to_destination = (TRAVEL_DISTANCE.to_f / AVERAGE_SPEED * SECONDS_PER_HOURS) - elapsed_time
+        print_status
+      end
     end
   end
+
+  def print_status
+    puts 'Mission status:'
+    puts "  Current fuel burn rate: #{BURN_RATE} liters/min"
+    puts "  Current speed: #{current_speed} km/h"
+    puts "  Elapsed time: #{elapsed_time} seconds"
+    puts "  Current distance traveled: #{current_distance_traveled.round(2)} km"
+    puts "  Time to destination: #{time_to_destination.round(2)} seconds"
+  end
+
+  private
 
   def current_speed
     rand(1400..1600).to_f
@@ -75,12 +96,7 @@ class Mission
     (TRAVEL_DISTANCE.to_f / AVERAGE_SPEED * SECONDS_PER_HOURS) - elapsed_time
   end
 
-  def print_status
-    puts 'Mission status:'
-    puts "  Current fuel burn rate: #{BURN_RATE} liters/min"
-    puts "  Current speed: #{current_speed} km/h"
-    puts "  Elapsed time: #{elapsed_time} seconds"
-    puts "  Current distance traveled: #{distance_traveled.round(2)} km"
-    puts "  Time to destination: #{time_to_destination.round(2)} seconds"
+  def current_distance_traveled
+    current_speed / SECONDS_PER_HOURS * @elapsed_time
   end
 end
