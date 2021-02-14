@@ -8,7 +8,7 @@ class Mission
 
   attr_reader :elapsed_time, :distance_traveled, :aborted, :exploded
 
-  def initialize(name)
+  def initialize(name: 'Minerva')
     @name = name # this does not appear to be used
     @elapsed_time = 0
     @distance_traveled = 0
@@ -34,11 +34,12 @@ class Mission
     (1..n).to_a.sample == 1
   end
 
-  def prelaunch_sequence
+  def event_sequence
     engage_afterburner
     release_support_structures
     perform_cross_checks
     launch
+    go_again?
   end
 
   def engage_afterburner
@@ -67,14 +68,18 @@ class Mission
       puts 'Your rocket exploded!'
       @exploded = true
     else
-      total_distance_traveled = 0
-      while total_distance_traveled <= TRAVEL_DISTANCE
-        @elapsed_time += 15
-        total_distance_traveled += current_distance_traveled
-        time_to_destination = (TRAVEL_DISTANCE.to_f / AVERAGE_SPEED * SECONDS_PER_HOURS) - elapsed_time
+      while @distance_traveled <= TRAVEL_DISTANCE
+        @elapsed_time += 30
+        @distance_traveled = current_distance_traveled
         print_status
       end
     end
+  end
+
+  def go_again?
+    return unless continue? && prompt_user('Would you like to launch again?')
+    @elapsed_time = @distance_traveled = 0
+    event_sequence
   end
 
   def print_status
@@ -82,7 +87,7 @@ class Mission
     puts "  Current fuel burn rate: #{BURN_RATE} liters/min"
     puts "  Current speed: #{current_speed} km/h"
     puts "  Elapsed time: #{elapsed_time} seconds"
-    puts "  Current distance traveled: #{current_distance_traveled.round(2)} km"
+    puts "  Distance traveled: #{distance_traveled.round(2)} km"
     puts "  Time to destination: #{time_to_destination.round(2)} seconds"
   end
 
@@ -93,10 +98,14 @@ class Mission
   end
 
   def time_to_destination
-    (TRAVEL_DISTANCE.to_f / AVERAGE_SPEED * SECONDS_PER_HOURS) - elapsed_time
+    if @distance_traveled < 160
+      (TRAVEL_DISTANCE / current_speed * SECONDS_PER_HOURS) - elapsed_time
+    else
+      0
+    end
   end
 
   def current_distance_traveled
-    current_speed / SECONDS_PER_HOURS * @elapsed_time
+    current_speed / SECONDS_PER_HOURS * elapsed_time
   end
 end
