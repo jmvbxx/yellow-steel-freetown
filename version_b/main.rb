@@ -1,5 +1,5 @@
-require_relative './mission.rb'
+require_relative 'mission'
 require 'pry'
 
-mission = Mission.new('Minerva')
-mission.prelaunch_sequence
+mission = Mission.new
+mission.event_sequence
