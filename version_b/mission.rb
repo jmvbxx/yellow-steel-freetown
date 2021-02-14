@@ -7,8 +7,9 @@ class Mission
   SECONDS_PER_HOURS = 3_600
 
   attr_reader :elapsed_time, :distance_traveled, :aborted, :exploded
+  attr_accessor :name
 
-  def initialize(name: 'Minerva')
+  def initialize(name)
     @name = name # this does not appear to be used
     @elapsed_time = 0
     @distance_traveled = 0
@@ -35,11 +36,13 @@ class Mission
   end
 
   def event_sequence
+    print_plan
+    select_name
     engage_afterburner
     release_support_structures
     perform_cross_checks
     launch
-    go_again?
+    play_again?
   end
 
   def engage_afterburner
@@ -68,6 +71,7 @@ class Mission
       puts 'Your rocket exploded!'
       @exploded = true
     else
+      puts 'Launched!'
       while @distance_traveled <= TRAVEL_DISTANCE
         @elapsed_time += 30
         @distance_traveled = current_distance_traveled
@@ -76,10 +80,24 @@ class Mission
     end
   end
 
-  def go_again?
+  def play_again?
     return unless continue? && prompt_user('Would you like to launch again?')
     @elapsed_time = @distance_traveled = 0
     event_sequence
+  end
+
+  def print_plan
+    puts "Mission plan:"
+    puts "  Travel distance: #{TRAVEL_DISTANCE} km"
+    puts "  Payload capacity: #{PAYLOAD_CAPACITY} kg"
+    puts "  Fuel capacity: #{FUEL_CAPACITY} liters"
+    puts "  Burn rate: #{BURN_RATE} liters/min"
+    puts "  Average speed: #{AVERAGE_SPEED} km/h"
+  end
+
+  def select_name
+    print 'What is the name of this mission? '
+    name = gets.chomp
   end
 
   def print_status
