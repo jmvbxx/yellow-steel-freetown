@@ -1,7 +1,7 @@
 require '../mission'
 
 RSpec.describe Mission do
-  let(:mission) { Mission.new }
+  let(:mission) { Mission.new('Minerva') }
   context "#initialize" do
 
     it "starts with no elapsed time" do
@@ -13,12 +13,14 @@ RSpec.describe Mission do
     end
   end
 
-  # context "#distance_traveled" do
-  #
-  #   it "should have no distance_traveled if mission aborted" do
-  #
-  #   end
-  # end
+  context "#distance_traveled" do
+
+    it "should have no distance_traveled if mission aborted" #do
+    #   expect(mission).to receive(:aborted).and_return(true)
+    #   expect(mission.distance_traveled).to eq 0
+    # end
+
+  end
 
   context "#failed?" do
 
