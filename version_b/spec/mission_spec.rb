@@ -1,7 +1,7 @@
 require '../mission'
 
 RSpec.describe Mission do
-  let(:mission) { Mission.new('Minerva') }
+  let(:mission) { Mission.new }
   context "#initialize" do
 
     it "starts with no elapsed time" do
