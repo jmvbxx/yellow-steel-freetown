@@ -5,6 +5,7 @@ class Mission
   BURN_RATE = 168_233         # liters per minute
   AVERAGE_SPEED = 1_500       # kilometers/hr
   SECONDS_PER_HOURS = 3_600
+  SPEEDS_ARR = []
 
   attr_reader :elapsed_time, :distance_traveled, :aborted, :exploded
   attr_accessor :name
@@ -103,7 +104,7 @@ class Mission
   def print_status
     puts 'Mission status:'
     puts "  Current fuel burn rate: #{BURN_RATE} liters/min"
-    puts "  Current speed: #{current_speed} km/h"
+    puts "  Current speed: #{(current_speed * SECONDS_PER_HOURS).round(2)} km/h"
     puts "  Elapsed time: #{elapsed_time} seconds"
     puts "  Distance traveled: #{distance_traveled.round(2)} km"
     puts "  Time to destination: #{time_to_destination.round(2)} seconds"
@@ -112,18 +113,20 @@ class Mission
   private
 
   def current_speed
-    rand(1400..1600).to_f
+    SPEEDS_ARR << rand(1400..1600).to_f
+    average_speed = SPEEDS_ARR.sum / SPEEDS_ARR.size
+    average_speed / SECONDS_PER_HOURS
   end
 
   def time_to_destination
     if @distance_traveled < 160
-      (TRAVEL_DISTANCE / current_speed * SECONDS_PER_HOURS) - elapsed_time
+      (TRAVEL_DISTANCE - current_distance_traveled) / current_speed
     else
       0
     end
   end
 
   def current_distance_traveled
-    current_speed / SECONDS_PER_HOURS * elapsed_time
+    current_speed * elapsed_time
   end
 end
