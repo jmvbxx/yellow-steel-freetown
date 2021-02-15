@@ -9,7 +9,7 @@ class Mission
   attr_reader :elapsed_time, :distance_traveled, :aborted, :exploded
   attr_accessor :name
 
-  def initialize(name)
+  def initialize(name: nil)
     @name = name # this does not appear to be used
     @elapsed_time = 0
     @distance_traveled = 0
