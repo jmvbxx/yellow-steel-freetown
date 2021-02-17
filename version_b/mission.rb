@@ -7,15 +7,21 @@ class Mission
   SECONDS_PER_HOURS = 3_600
   SPEEDS_ARR = []
 
-  attr_reader :elapsed_time, :distance_traveled, :aborted, :exploded
+  attr_reader :elapsed_time, :total_time, :distance_traveled, :aborted, :exploded
   attr_accessor :name
+
+  class << self
+    attr_reader :aborted, :exploded, :distance_traveled
+  end
 
   def initialize(name: nil)
     @name = name # this does not appear to be used
     @elapsed_time = 0
+    @total_time = 0
     @distance_traveled = 0
     @aborted = false
     @exploded = false
+    @count = 0
   end
 
   def failed?
@@ -32,6 +38,10 @@ class Mission
     !@aborted
   end
 
+  def seconds_to_hms(sec)
+    "%02d:%02d:%02d" % [sec / 3600, sec / 60 % 60, sec % 60]
+  end
+
   def one_in_n(n)
     (1..n).to_a.sample == 1
   end
@@ -43,6 +53,7 @@ class Mission
     release_support_structures
     perform_cross_checks
     launch
+    print_summary
     play_again?
   end
 
@@ -74,7 +85,7 @@ class Mission
     else
       puts 'Launched!'
       while @distance_traveled <= TRAVEL_DISTANCE
-        @elapsed_time += 30
+        @total_time = @elapsed_time += 5
         @distance_traveled = current_distance_traveled
         print_status
       end
@@ -84,6 +95,8 @@ class Mission
   def play_again?
     return unless continue? && prompt_user('Would you like to launch again?')
     @elapsed_time = @distance_traveled = 0
+    print 'Do you wish to continue? (Y/n) '
+    @count += 1
     event_sequence
   end
 
@@ -105,9 +118,18 @@ class Mission
     puts 'Mission status:'
     puts "  Current fuel burn rate: #{BURN_RATE} liters/min"
     puts "  Current speed: #{(current_speed * SECONDS_PER_HOURS).round(2)} km/h"
-    puts "  Elapsed time: #{elapsed_time} seconds"
+    puts "  Elapsed time: #{seconds_to_hms(elapsed_time)}"
     puts "  Distance traveled: #{distance_traveled.round(2)} km"
     puts "  Time to destination: #{time_to_destination.round(2)} seconds"
+  end
+
+  def print_summary
+    puts "Mission summary:"
+    puts "  Total distance traveled: #{distance_traveled.round(2)} km"
+    puts "  Number of abort and retries: 1/#{@count}"
+    puts "  Number of explosions: 0"
+    puts "  Total fuel burned: 1,079,091 liters"
+    puts "  Flight time: #{seconds_to_hms(total_time)}"
   end
 
   private
