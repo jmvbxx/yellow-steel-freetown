@@ -22,6 +22,8 @@ class Mission
     @aborted = false
     @exploded = false
     @count = 0
+    @aborts = 0
+    @explosions = 0
   end
 
   def failed?
@@ -62,6 +64,7 @@ class Mission
     if one_in_n(3)
       puts 'Mission aborted!'
       @aborted = true
+      @aborts += 1
     else
       puts 'Afterburner engaged!'
     end
@@ -82,6 +85,8 @@ class Mission
     if one_in_n(5)
       puts 'Your rocket exploded!'
       @exploded = true
+      @explosions += 1
+      play_again?
     else
       puts 'Launched!'
       while @distance_traveled <= TRAVEL_DISTANCE
@@ -126,9 +131,9 @@ class Mission
   def print_summary
     puts "Mission summary:"
     puts "  Total distance traveled: #{distance_traveled.round(2)} km"
-    puts "  Number of abort and retries: 1/#{@count}"
-    puts "  Number of explosions: 0"
-    puts "  Total fuel burned: 1,079,091 liters"
+    puts "  Number of abort and retries: #{@aborts}/#{@count}"
+    puts "  Number of explosions: #{@explosions}"
+    puts "  Total fuel burned: #{total_fuel_burned.round(0)} liters"
     puts "  Flight time: #{seconds_to_hms(total_time)}"
   end
 
@@ -150,5 +155,9 @@ class Mission
 
   def current_distance_traveled
     current_speed * elapsed_time
+  end
+
+  def total_fuel_burned
+    BURN_RATE * total_time / 60
   end
 end
