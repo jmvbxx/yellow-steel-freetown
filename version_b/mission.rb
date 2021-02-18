@@ -9,6 +9,7 @@ class Mission
 
   attr_reader :elapsed_time, :total_time, :distance_traveled, :aborted, :exploded,
               :mission_plan
+
   attr_accessor :name
 
   class << self
@@ -22,7 +23,7 @@ class Mission
     @distance_traveled = 0
     @aborted = false
     @exploded = false
-    @count = 0
+    @retries = 0
     @aborts = 0
     @explosions = 0
     @mission_plan = mission_plan
@@ -67,6 +68,7 @@ class Mission
       puts 'Mission aborted!'
       @aborted = true
       @aborts += 1
+      play_again?
     else
       puts 'Afterburner engaged!'
     end
@@ -103,7 +105,7 @@ class Mission
     return unless continue? && prompt_user('Would you like to launch again?')
     @elapsed_time = @distance_traveled = 0
     print 'Do you wish to continue? (Y/n) '
-    @count += 1
+    @retries += 1
     event_sequence
   end
 
@@ -124,7 +126,7 @@ class Mission
   def print_summary
     puts "Mission summary:"
     puts "  Total distance traveled: #{distance_traveled.round(2)} km"
-    puts "  Number of abort and retries: #{@aborts}/#{@count}"
+    puts "  Number of aborts and retries: #{@aborts}/#{@retries}"
     puts "  Number of explosions: #{@explosions}"
     puts "  Total fuel burned: #{total_fuel_burned.round(0)} liters"
     puts "  Flight time: #{seconds_to_hms(total_time)}"
