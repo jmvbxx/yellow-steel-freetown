@@ -1,4 +1,5 @@
 require_relative 'mission_control'
+require_relative 'mission_plan'
 require_relative 'mission'
 require 'pry'
 

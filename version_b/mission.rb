@@ -7,14 +7,15 @@ class Mission
   SECONDS_PER_HOURS = 3_600
   SPEEDS_ARR = []
 
-  attr_reader :elapsed_time, :total_time, :distance_traveled, :aborted, :exploded
+  attr_reader :elapsed_time, :total_time, :distance_traveled, :aborted, :exploded,
+              :mission_plan
   attr_accessor :name
 
   class << self
     attr_reader :aborted, :exploded, :distance_traveled
   end
 
-  def initialize(name: nil)
+  def initialize(name: nil, mission_plan: MissionPlan.new)
     @name = name # this does not appear to be used
     @elapsed_time = 0
     @total_time = 0
@@ -24,6 +25,7 @@ class Mission
     @count = 0
     @aborts = 0
     @explosions = 0
+    @mission_plan = mission_plan
   end
 
   def failed?
@@ -49,7 +51,7 @@ class Mission
   end
 
   def event_sequence
-    print_plan
+    mission_plan.print_plan
     select_name
     engage_afterburner
     release_support_structures
@@ -103,15 +105,6 @@ class Mission
     print 'Do you wish to continue? (Y/n) '
     @count += 1
     event_sequence
-  end
-
-  def print_plan
-    puts "Mission plan:"
-    puts "  Travel distance: #{TRAVEL_DISTANCE} km"
-    puts "  Payload capacity: #{PAYLOAD_CAPACITY} kg"
-    puts "  Fuel capacity: #{FUEL_CAPACITY} liters"
-    puts "  Burn rate: #{BURN_RATE} liters/min"
-    puts "  Average speed: #{AVERAGE_SPEED} km/h"
   end
 
   def select_name
