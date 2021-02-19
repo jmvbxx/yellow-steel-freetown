@@ -5,7 +5,8 @@ class Mission
   BURN_RATE = 168_233         # liters per minute
   AVERAGE_SPEED = 1_500       # kilometers/hr
   SECONDS_PER_HOURS = 3_600
-  SPEEDS_ARR = []
+
+  @@speeds_arr = []
 
   attr_reader :elapsed_time, :total_time, :distance_traveled, :aborted, :exploded,
               :mission_plan
@@ -66,7 +67,6 @@ class Mission
     return unless continue? && prompt_user('Engage afterburner?')
     if one_in_n(3)
       puts 'Mission aborted!'
-      @aborted = true
       @aborts += 1
       play_again?
     else
@@ -88,7 +88,6 @@ class Mission
     return unless continue? && prompt_user('Launch?')
     if one_in_n(5)
       puts 'Your rocket exploded!'
-      @exploded = true
       @explosions += 1
       play_again?
     else
@@ -135,8 +134,8 @@ class Mission
   private
 
   def current_speed
-    SPEEDS_ARR << rand(1400..1600).to_f
-    average_speed = SPEEDS_ARR.sum / SPEEDS_ARR.size
+    @@speeds_arr << rand(1400..1600).to_f
+    average_speed = @@speeds_arr.sum / @@speeds_arr.size
     average_speed / SECONDS_PER_HOURS
   end
 
