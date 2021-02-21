@@ -103,7 +103,6 @@ class Mission
   def play_again?
     return unless continue? && prompt_user('Would you like to launch again?')
     @elapsed_time = @distance_traveled = 0
-    print 'Do you wish to continue? (Y/n) '
     @retries += 1
     event_sequence
   end
