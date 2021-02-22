@@ -63,6 +63,7 @@ class Mission
     play_again?
   end
 
+  # TODO fix bug where the mission summary prints the number of times that abort happen
   def engage_afterburner
     return unless continue? && prompt_user('Engage afterburner?')
     if one_in_n(3)
@@ -87,15 +88,16 @@ class Mission
   def launch
     return unless continue? && prompt_user('Launch?')
     if one_in_n(5)
-      puts 'Your rocket exploded!'
+      puts 'Launched!'
+      # TODO fix the random distance traveled before explosion
+      while (@distance_traveled + rand(max=TRAVEL_DISTANCE)) <= TRAVEL_DISTANCE
+        launch_while
+      end
       @explosions += 1
-      play_again?
     else
       puts 'Launched!'
       while @distance_traveled <= TRAVEL_DISTANCE
-        @total_time = @elapsed_time += 5
-        @distance_traveled = current_distance_traveled
-        print_status
+        launch_while
       end
     end
   end
@@ -152,5 +154,11 @@ class Mission
 
   def total_fuel_burned
     BURN_RATE * total_time / 60
+  end
+
+  def launch_while
+    @total_time = @elapsed_time += 5
+    @distance_traveled = current_distance_traveled
+    print_status
   end
 end
