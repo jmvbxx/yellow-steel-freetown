@@ -93,6 +93,7 @@ class Mission
       while (@distance_traveled + rand(max=TRAVEL_DISTANCE)) <= TRAVEL_DISTANCE
         launch_while
       end
+      puts 'Your rocket exploded!'
       @explosions += 1
     else
       puts 'Launched!'
