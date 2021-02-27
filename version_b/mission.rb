@@ -9,13 +9,14 @@ class Mission
   @@speeds_arr = []
 
   attr_reader :elapsed_time, :total_time, :distance_traveled, :aborted, :exploded,
-              :mission_plan
+              :mission_plan, :status
 
   attr_accessor :name
 
-  class << self
-    attr_reader :aborted, :exploded, :distance_traveled
-  end
+  # This was only included for testing purposes
+  # class << self
+  #   attr_reader :aborted, :exploded, :distance_traveled
+  # end
 
   def initialize(name: nil, mission_plan: MissionPlan.new)
     @name = name # this does not appear to be used
@@ -28,6 +29,15 @@ class Mission
     @aborts = 0
     @explosions = 0
     @mission_plan = mission_plan
+    @status = :pending
+  end
+
+  def tick
+    event_sequence
+
+    @total_time = @elapsed_time += 5
+    @distance_traveled = current_distance_traveled
+    print_status
   end
 
   def failed?
