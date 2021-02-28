@@ -47,10 +47,6 @@ class Mission
     !failed?
   end
 
-  def one_in_n(n)
-    (1..n).to_a.sample == 1
-  end
-
   def event_sequence
     mission_plan.print_plan
     select_name
@@ -72,13 +68,14 @@ class Mission
   # TODO fix bug where the mission summary prints the number of times that abort happen
   def engage_afterburner
     return unless continue? && prompt_user('Engage afterburner?')
-    if one_in_n(3)
-      puts 'Mission aborted!'
-      @aborts += 1
-      play_again?
-    else
-      puts 'Afterburner engaged!'
-    end
+    puts 'Afterburner engaged!'
+    # if one_in_n(3)
+    #   puts 'Mission aborted!'
+    #   @aborts += 1
+    #   play_again?
+    # else
+    #   puts 'Afterburner engaged!'
+    # end
   end
 
   def release_support_structures
