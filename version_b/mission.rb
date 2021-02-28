@@ -9,7 +9,7 @@ class Mission
   @@speeds_arr = []
 
   attr_reader :elapsed_time, :total_time, :distance_traveled, :aborted, :exploded,
-              :mission_plan, :status
+              :mission_plan, :mission_reporter
 
   attr_accessor :name
 
@@ -18,7 +18,7 @@ class Mission
   #   attr_reader :aborted, :exploded, :distance_traveled
   # end
 
-  def initialize(name: nil, mission_plan: MissionPlan.new)
+  def initialize(name: nil, mission_plan: MissionPlan.new, mission_reporter: MissionReporter.new(self ))
     @name = name # this does not appear to be used
     @elapsed_time = 0
     @total_time = 0
@@ -29,15 +29,8 @@ class Mission
     @aborts = 0
     @explosions = 0
     @mission_plan = mission_plan
-    @status = :pending
-  end
-
-  def tick
-    event_sequence
-
-    @total_time = @elapsed_time += 5
-    @distance_traveled = current_distance_traveled
-    print_status
+    # @status = :pending
+    @mission_reporter = mission_reporter
   end
 
   def failed?
@@ -54,10 +47,6 @@ class Mission
     !@aborted
   end
 
-  def seconds_to_hms(sec)
-    "%02d:%02d:%02d" % [sec / 3600, sec / 60 % 60, sec % 60]
-  end
-
   def one_in_n(n)
     (1..n).to_a.sample == 1
   end
@@ -69,7 +58,7 @@ class Mission
     release_support_structures
     perform_cross_checks
     launch
-    print_summary
+    mission_reporter.print_summary
     play_again?
   end
 
@@ -101,14 +90,14 @@ class Mission
       puts 'Launched!'
       # TODO fix the random distance traveled before explosion
       while (@distance_traveled + rand(max=TRAVEL_DISTANCE)) <= TRAVEL_DISTANCE
-        launch_while
+        launch_step
       end
       puts 'Your rocket exploded!'
       @explosions += 1
     else
       puts 'Launched!'
       while @distance_traveled <= TRAVEL_DISTANCE
-        launch_while
+        launch_step
       end
     end
   end
@@ -125,25 +114,7 @@ class Mission
     name = gets.chomp
   end
 
-  def print_status
-    puts 'Mission status:'
-    puts "  Current fuel burn rate: #{BURN_RATE} liters/min"
-    puts "  Current speed: #{(current_speed * SECONDS_PER_HOURS).round(2)} km/h"
-    puts "  Elapsed time: #{seconds_to_hms(elapsed_time)}"
-    puts "  Distance traveled: #{distance_traveled.round(2)} km"
-    puts "  Time to destination: #{time_to_destination.round(2)} seconds"
-  end
-
-  def print_summary
-    puts "Mission summary:"
-    puts "  Total distance traveled: #{distance_traveled.round(2)} km"
-    puts "  Number of aborts and retries: #{@aborts}/#{@retries}"
-    puts "  Number of explosions: #{@explosions}"
-    puts "  Total fuel burned: #{total_fuel_burned.round(0)} liters"
-    puts "  Flight time: #{seconds_to_hms(total_time)}"
-  end
-
-  private
+  # private
 
   def current_speed
     @@speeds_arr << rand(1400..1600).to_f
@@ -167,9 +138,9 @@ class Mission
     BURN_RATE * total_time / 60
   end
 
-  def launch_while
+  def launch_step
     @total_time = @elapsed_time += 5
     @distance_traveled = current_distance_traveled
-    print_status
+    mission_reporter.print_status
   end
 end
