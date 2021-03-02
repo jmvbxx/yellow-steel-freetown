@@ -9,17 +9,9 @@ class Mission
   @@speeds_arr = []
 
   attr_reader :elapsed_time, :total_time, :distance_traveled, :aborted, :exploded,
-              :mission_plan, :mission_reporter
+              :mission_reporter, :aborts, :retries, :explosions
 
-  attr_accessor :name
-
-  # This was only included for testing purposes
-  # class << self
-  #   attr_reader :aborted, :exploded, :distance_traveled
-  # end
-
-  def initialize(name: nil, mission_plan: MissionPlan.new, mission_reporter: MissionReporter.new(self ))
-    @name = name # this does not appear to be used
+  def initialize(mission_reporter: MissionReporter.new(self))
     @elapsed_time = 0
     @total_time = 0
     @distance_traveled = 0
@@ -28,8 +20,6 @@ class Mission
     @retries = 0
     @aborts = 0
     @explosions = 0
-    @mission_plan = mission_plan
-    # @status = :pending
     @mission_reporter = mission_reporter
   end
 
@@ -52,8 +42,6 @@ class Mission
   end
 
   def event_sequence
-    mission_plan.print_plan
-    select_name
     engage_afterburner
     release_support_structures
     perform_cross_checks
@@ -107,11 +95,6 @@ class Mission
     @elapsed_time = @distance_traveled = 0
     @retries += 1
     event_sequence
-  end
-
-  def select_name
-    print 'What is the name of this mission? '
-    name = gets.chomp
   end
 
   # private
