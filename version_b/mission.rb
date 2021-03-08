@@ -9,18 +9,22 @@ class Mission
   @@speeds_arr = []
 
   attr_reader :elapsed_time, :total_time, :distance_traveled, :aborted, :exploded,
-              :mission_reporter, :aborts, :retries, :explosions
+              :mission_reporter, :aborts, :explosions
 
-  def initialize(mission_reporter: MissionReporter.new(self))
+  class << self
+    attr_writer :distance_traveled, :elapsed_time
+  end
+
+  def initialize(mission_reporter: MissionReporter.new(self), mission_control: MissionControl.new)
     @elapsed_time = 0
     @total_time = 0
     @distance_traveled = 0
     @aborted = false
     @exploded = false
-    @retries = 0
     @aborts = 0
     @explosions = 0
     @mission_reporter = mission_reporter
+    @mission_control = mission_control
   end
 
   def failed?
@@ -47,7 +51,6 @@ class Mission
     perform_cross_checks
     launch
     mission_reporter.print_summary
-    play_again?
   end
 
   # TODO fix bug where the mission summary prints the number of times that abort happen
@@ -56,7 +59,7 @@ class Mission
     if one_in_n(3)
       puts 'Mission aborted!'
       @aborts += 1
-      play_again?
+      @mission_control.play_again?
     else
       puts 'Afterburner engaged!'
     end
@@ -88,13 +91,6 @@ class Mission
         launch_step
       end
     end
-  end
-
-  def play_again?
-    return unless continue? && prompt_user('Would you like to launch again?')
-    @elapsed_time = @distance_traveled = 0
-    @retries += 1
-    event_sequence
   end
 
   # private
