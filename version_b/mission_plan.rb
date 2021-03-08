@@ -1,4 +1,12 @@
 class MissionPlan
+  @instance = new
+
+  private_class_method :new
+
+  def self.instance
+    @instance
+  end
+
   def print_plan
     puts "Mission plan:"
     puts "  Travel distance: #{Mission::TRAVEL_DISTANCE} km"
