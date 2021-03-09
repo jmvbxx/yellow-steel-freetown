@@ -1,13 +1,9 @@
 class MissionControl
-  attr_reader :mission_instance, :mission_plan, :retries
+  attr_reader :mission_instance, :mission_plan
 
   attr_accessor :name
 
-  class << self
-    attr_reader :retries
-  end
-
-  def initialize(name: nil, mission_instance: nil, mission_plan: nil)
+  def initialize(name: nil, mission_instance: Mission.new, mission_plan: nil)
     @name = name
     @mission_instance = mission_instance
     @mission_plan = MissionPlan.instance
@@ -29,7 +25,6 @@ class MissionControl
   def play_again?
     return unless mission_instance.continue? && mission_instance.prompt_user('Would you like to launch again?')
     Mission.elapsed_time = Mission.distance_traveled = 0
-    @retries += 1
     launch_sequence
   end
 end
