@@ -9,7 +9,7 @@ class Mission
   @@speeds_arr = []
 
   attr_reader :elapsed_time, :total_time, :distance_traveled, :aborted, :exploded,
-              :mission_reporter, :aborts, :explosions, :retries, :mission_control
+              :mission_reporter, :aborts, :explosions, :retries
 
   class << self
     attr_writer :distance_traveled, :elapsed_time
