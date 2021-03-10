@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MissionReporter
   attr_reader :mission
 
@@ -15,7 +17,7 @@ class MissionReporter
   end
 
   def print_summary
-    puts "Mission summary:"
+    puts 'Mission summary:'
     puts "  Total distance traveled: #{mission.distance_traveled.round(2)} km"
     puts "  Number of aborts and retries: #{mission.aborts}/#{mission.retries}"
     puts "  Number of explosions: #{mission.explosions}"
@@ -26,6 +28,6 @@ class MissionReporter
   private
 
   def seconds_to_hms(sec)
-    "%02d:%02d:%02d" % [sec / 3600, sec / 60 % 60, sec % 60]
+    format('%02d:%02d:%02d', sec / 3600, sec / 60 % 60, sec % 60)
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Mission
   TRAVEL_DISTANCE = 160       # kilometers
   PAYLOAD_CAPACITY = 50_000   # kilograms including the rocket itself
@@ -53,9 +55,10 @@ class Mission
     @retries += 1
   end
 
-  # TODO fix bug where the mission summary prints the number of times that abort happen
+  # TODO: fix bug where the mission summary prints the number of times that abort happen
   def engage_afterburner
     return unless continue? && prompt_user('Engage afterburner?')
+
     if one_in_n(3)
       puts 'Mission aborted!'
       @aborts += 1
@@ -67,29 +70,30 @@ class Mission
 
   def release_support_structures
     return unless continue? && prompt_user('Release support structures?')
+
     puts 'Support structures released!'
   end
 
   def perform_cross_checks
     return unless continue? && prompt_user('Perform cross-checks?')
+
     puts 'Cross-checks performed!'
   end
 
   def launch
     return unless continue? && prompt_user('Launch?')
+
     if one_in_n(5)
       puts 'Launched!'
-      # TODO fix the random distance traveled before explosion
-      while (@distance_traveled + rand(max=TRAVEL_DISTANCE)) <= TRAVEL_DISTANCE
+      # TODO: fix the random distance traveled before explosion
+      while (@distance_traveled + rand(max = TRAVEL_DISTANCE)) <= TRAVEL_DISTANCE
         launch_step
       end
       puts 'Your rocket exploded!'
       @explosions += 1
     else
       puts 'Launched!'
-      while @distance_traveled <= TRAVEL_DISTANCE
-        launch_step
-      end
+      launch_step while @distance_traveled <= TRAVEL_DISTANCE
     end
   end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MissionControl
   attr_reader :mission_instance, :mission_plan
 
@@ -24,6 +26,7 @@ class MissionControl
 
   def play_again?
     return unless mission_instance.continue? && mission_instance.prompt_user('Would you like to launch again?')
+
     Mission.elapsed_time = Mission.distance_traveled = 0
     launch_sequence
   end

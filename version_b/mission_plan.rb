@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 class MissionPlan
   @instance = new
 
   private_class_method :new
 
-  def self.instance
-    @instance
+  class << self
+    attr_reader :instance
   end
 
   def print_plan
-    puts "Mission plan:"
+    puts 'Mission plan:'
     puts "  Travel distance: #{Mission::TRAVEL_DISTANCE} km"
     puts "  Payload capacity: #{Mission::PAYLOAD_CAPACITY} kg"
     puts "  Fuel capacity: #{Mission::FUEL_CAPACITY} liters"
