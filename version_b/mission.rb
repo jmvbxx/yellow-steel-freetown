@@ -6,8 +6,6 @@ class Mission
   AVERAGE_SPEED = 1_500       # kilometers/hr
   SECONDS_PER_HOURS = 3_600
 
-  @@speeds_arr = []
-
   attr_reader :elapsed_time, :total_time, :distance_traveled, :aborted, :exploded,
               :mission_reporter, :aborts, :explosions, :retries
 
@@ -25,6 +23,7 @@ class Mission
     @explosions = 0
     @retries = 0
     @mission_reporter = mission_reporter
+    @speeds_arr = []
   end
 
   def failed?
@@ -97,8 +96,8 @@ class Mission
   # private
 
   def current_speed
-    @@speeds_arr << rand(1400..1600).to_f
-    average_speed = @@speeds_arr.sum / @@speeds_arr.size
+    @speeds_arr << rand(1400..1600).to_f
+    average_speed = @speeds_arr.sum / @speeds_arr.size
     average_speed / SECONDS_PER_HOURS
   end
 
