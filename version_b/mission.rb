@@ -8,12 +8,10 @@ class Mission
   AVERAGE_SPEED = 1_500       # kilometers/hr
   SECONDS_PER_HOURS = 3_600
 
-  attr_reader :elapsed_time, :total_time, :distance_traveled, :aborted, :exploded,
-              :mission_reporter, :aborts, :explosions, :retries
+  attr_reader :total_time, :aborted, :exploded, :mission_reporter, :aborts,
+              :explosions, :retries
 
-  class << self
-    attr_writer :distance_traveled, :elapsed_time
-  end
+  attr_accessor :elapsed_time, :distance_traveled
 
   def initialize(mission_reporter: MissionReporter.new(self))
     @elapsed_time = 0
@@ -42,8 +40,8 @@ class Mission
     !@aborted
   end
 
-  def one_in_n(n)
-    (1..n).to_a.sample == 1
+  def one_in_number(number)
+    (1..number).to_a.sample == 1
   end
 
   def event_sequence
@@ -59,7 +57,7 @@ class Mission
   def engage_afterburner
     return unless continue? && prompt_user('Engage afterburner?')
 
-    if one_in_n(3)
+    if one_in_number(3)
       puts 'Mission aborted!'
       @aborts += 1
       MissionControl.new.play_again?
@@ -83,16 +81,13 @@ class Mission
   def launch
     return unless continue? && prompt_user('Launch?')
 
-    if one_in_n(5)
-      puts 'Launched!'
+    puts 'Launched!'
+    if one_in_number(5)
       # TODO: fix the random distance traveled before explosion
-      while (@distance_traveled + rand(max = TRAVEL_DISTANCE)) <= TRAVEL_DISTANCE
-        launch_step
-      end
+      launch_step while (@distance_traveled + rand(TRAVEL_DISTANCE)) <= TRAVEL_DISTANCE
       puts 'Your rocket exploded!'
       @explosions += 1
     else
-      puts 'Launched!'
       launch_step while @distance_traveled <= TRAVEL_DISTANCE
     end
   end

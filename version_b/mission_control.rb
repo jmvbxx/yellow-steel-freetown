@@ -5,7 +5,7 @@ class MissionControl
 
   attr_accessor :name
 
-  def initialize(name: nil, mission_instance: Mission.new, mission_plan: nil)
+  def initialize(name: nil, mission_instance: Mission.new)
     @name = name
     @mission_instance = mission_instance
     @mission_plan = MissionPlan.instance
@@ -25,9 +25,9 @@ class MissionControl
   end
 
   def play_again?
-    return unless mission_instance.continue? && mission_instance.prompt_user('Would you like to launch again?')
+    return unless mission_instance.prompt_user('Would you like to launch again?')
 
-    Mission.elapsed_time = Mission.distance_traveled = 0
+    mission_instance.elapsed_time = mission_instance.distance_traveled = 0
     launch_sequence
   end
 end
