@@ -1,21 +1,20 @@
 # frozen_string_literal: true
 
 class MissionControl
-  attr_reader :mission_instance, :mission_plan
+  attr_reader :mission, :mission_plan
 
   attr_accessor :name
 
-  def initialize(name: nil, mission_instance: Mission.new)
+  def initialize(name: nil, mission: Mission.new)
     @name = name
-    @mission_instance = mission_instance
+    @mission = mission
     @mission_plan = MissionPlan.instance
-    @retries = 0
   end
 
   def launch_sequence
     @mission_plan.print_plan
     select_name
-    mission_instance.event_sequence
+    mission.event_sequence
     play_again?
   end
 
@@ -25,9 +24,9 @@ class MissionControl
   end
 
   def play_again?
-    return unless mission_instance.prompt_user('Would you like to launch again?')
+    return unless mission.prompt_user('Would you like to launch again?')
 
-    mission_instance.elapsed_time = mission_instance.distance_traveled = 0
+    mission.elapsed_time = mission.distance_traveled = 0
     launch_sequence
   end
 end
