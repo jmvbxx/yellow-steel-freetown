@@ -1,20 +1,24 @@
 # frozen_string_literal: true
-
+#
 class MissionControl
-  attr_reader :mission, :mission_plan
+  attr_reader :mission_instance, :mission_plan
 
   attr_accessor :name
 
-  def initialize(name: nil, mission: Mission.new)
+  attr_reader :missions
+
+  def initialize(name: nil, mission_instance: Mission.new)
     @name = name
-    @mission = mission
+    @missions = []
+    @mission_instance = mission_instance
     @mission_plan = MissionPlan.instance
+    @retries = 0
   end
 
   def launch_sequence
     @mission_plan.print_plan
     select_name
-    mission.event_sequence
+    mission_instance.event_sequence
     play_again?
   end
 
@@ -24,9 +28,19 @@ class MissionControl
   end
 
   def play_again?
-    return unless mission.prompt_user('Would you like to launch again?')
-
-    mission.elapsed_time = mission.distance_traveled = 0
+    return unless Cli.prompt_user('Would you like to launch again?')
+    @missions << Mission.new
+    total_distance = @missions.sum(&:mission_distance)
     launch_sequence
+  end
+end
+
+# Consider a helper like this that gets feedback from the user,
+# and that does not mutate any state.
+module Cli
+  def prompt_user(prompt)
+    print "#{prompt} (Y/n) "
+    gets.chomp.downcase.start_with?('y')
+    # returns true if Y, false if N
   end
 end

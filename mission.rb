@@ -52,7 +52,7 @@ class Mission
     print "#{prompt} (Y/n) "
     gets.chomp.downcase.start_with?('y')
   end
-  
+
   def one_in_number(number)
     (1..number).to_a.sample == 1
   end
