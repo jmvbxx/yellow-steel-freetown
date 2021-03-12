@@ -1,6 +1,17 @@
 # frozen_string_literal: true
-#
+
+# Consider a helper like this that gets feedback from the user,
+# and that does not mutate any state.
+module Cli
+  def prompt_user(prompt)
+    print "#{prompt} (Y/n) "
+    gets.chomp.downcase.start_with?('y')
+  end
+end
+
 class MissionControl
+  include Cli
+
   attr_reader :mission_instance, :mission_plan
 
   attr_accessor :name
@@ -28,19 +39,10 @@ class MissionControl
   end
 
   def play_again?
-    return unless Cli.prompt_user('Would you like to launch again?')
-    @missions << Mission.new
-    total_distance = @missions.sum(&:mission_distance)
-    launch_sequence
-  end
-end
+    return mission_instance.abort! unless prompt_user('Would you like to launch again?')
 
-# Consider a helper like this that gets feedback from the user,
-# and that does not mutate any state.
-module Cli
-  def prompt_user(prompt)
-    print "#{prompt} (Y/n) "
-    gets.chomp.downcase.start_with?('y')
-    # returns true if Y, false if N
+    @missions << Mission.new
+    # total_distance = @missions.sum(&:mission_distance)
+    launch_sequence
   end
 end

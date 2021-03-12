@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Mission
+  include Cli
+
   TRAVEL_DISTANCE_IN_KMS = 160
   PAYLOAD_CAPACITY_IN_KGS = 50_000
   FUEL_CAPACITY_IN_L = 1_514_100
@@ -48,11 +50,6 @@ class Mission
     !failed?
   end
 
-  def prompt_user(prompt)
-    print "#{prompt} (Y/n) "
-    gets.chomp.downcase.start_with?('y')
-  end
-
   def one_in_number(number)
     (1..number).to_a.sample == 1
   end
@@ -90,34 +87,36 @@ class Mission
   end
 
   def release_support_structures
-    return unless continue? && prompt_user('Release support structures?')
+    return abort! unless continue? && prompt_user('Release support structures?')
     puts 'Support structures released!'
   end
 
   def perform_cross_checks
-    return unless continue? && prompt_user('Perform cross-checks?')
+    return abort! unless continue? && prompt_user('Perform cross-checks?')
     puts 'Cross-checks performed!'
   end
 
   def launch
-    return unless continue? && prompt_user('Launch?')
+    return abort! unless continue? && prompt_user('Launch?')
     puts 'Launched!'
     if one_in_number(5)
       # TODO: fix the random distance traveled before explosion
-      launch_step while (@distance_traveled + rand(TRAVEL_DISTANCE)) <= TRAVEL_DISTANCE
+      launch_step while (@distance_traveled + rand(TRAVEL_DISTANCE_IN_KMS)) <= TRAVEL_DISTANCE_IN_KMS
       puts 'Your rocket exploded!'
       @explosions += 1
     else
-      launch_step while @distance_traveled <= TRAVEL_DISTANCE
+      launch_step while @distance_traveled <= TRAVEL_DISTANCE_IN_KMS
     end
   end
 
-  private
+  # private
 
   def abort!
     @aborted = true
   end
 
+  # This method is used to calculate an average current speed rather than just
+  # a fixed value of 1,500 km/h
   def current_speed
     @speeds_arr << rand(1400..1600).to_f
     average_speed = @speeds_arr.sum / @speeds_arr.size
@@ -125,8 +124,8 @@ class Mission
   end
 
   def time_to_destination
-    if @distance_traveled < 160
-      (TRAVEL_DISTANCE - current_distance_traveled) / current_speed
+    if @distance_traveled < TRAVEL_DISTANCE_IN_KMS
+      (TRAVEL_DISTANCE_IN_KMS - current_distance_traveled) / current_speed
     else
       0
     end
@@ -137,7 +136,7 @@ class Mission
   end
 
   def total_fuel_burned
-    BURN_RATE * total_time / 60
+    BURN_RATE_IN_L_PER_MINS * total_time / 60
   end
 
   def launch_step
