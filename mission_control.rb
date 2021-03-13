@@ -1,22 +1,13 @@
 # frozen_string_literal: true
 
-module Cli
-  def prompt_user(prompt)
-    print "#{prompt} (Y/n) "
-    gets.chomp.downcase.start_with?('y')
-  end
-end
+require_relative 'cli'
 
 class MissionControl
   include Cli
 
-  attr_reader :mission_instance, :mission_plan
+  attr_reader :mission_instance
 
-  attr_accessor :name
-
-  attr_reader :missions
-
-  def initialize(name: nil, mission_instance: Mission.new)
+  def initialize(name: nil, mission_instance: MissionNew.new)
     @name = name
     @missions = []
     @mission_instance = mission_instance
@@ -41,7 +32,8 @@ class MissionControl
     return mission_instance.abort! unless prompt_user('Would you like to launch again?')
 
     @missions << Mission.new
-    # total_distance = @missions.sum(&:mission_distance)
-    launch_sequence
+    if mission_instance.continue?
+      launch_sequence
+    end
   end
 end
