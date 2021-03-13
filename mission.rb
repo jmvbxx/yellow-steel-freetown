@@ -42,6 +42,32 @@ class Mission
     launch
   end
 
+  # This method is used to calculate an average current speed rather than just
+  # a fixed value of 1,500 km/h
+  def current_speed
+    @speeds_arr << rand(1400..1600).to_f
+    average_speed = @speeds_arr.sum / @speeds_arr.size
+    average_speed / SECONDS_PER_HOURS
+  end
+
+  def time_to_destination
+    if @distance_traveled < TRAVEL_DISTANCE_IN_KMS
+      (TRAVEL_DISTANCE_IN_KMS - current_distance_traveled) / current_speed
+    else
+      0
+    end
+  end
+
+  def total_fuel_burned
+    BURN_RATE_IN_L_PER_MIN * total_time / SECONDS_PER_MINUTE
+  end
+
+  def abort!
+    @aborted = true
+  end
+
+  private
+
   def engage_afterburner
     return abort! unless continue? && prompt_user('Engage afterburner?')
 
@@ -78,32 +104,8 @@ class Mission
     end
   end
 
-  # This method is used to calculate an average current speed rather than just
-  # a fixed value of 1,500 km/h
-  def current_speed
-    @speeds_arr << rand(1400..1600).to_f
-    average_speed = @speeds_arr.sum / @speeds_arr.size
-    average_speed / SECONDS_PER_HOURS
-  end
-
-  def time_to_destination
-    if @distance_traveled < TRAVEL_DISTANCE_IN_KMS
-      (TRAVEL_DISTANCE_IN_KMS - current_distance_traveled) / current_speed
-    else
-      0
-    end
-  end
-
   def current_distance_traveled
     current_speed * elapsed_time
-  end
-
-  def total_fuel_burned
-    BURN_RATE_IN_L_PER_MIN * total_time / SECONDS_PER_MINUTE
-  end
-
-  def abort!
-    @aborted = true
   end
 
   def launch_step
