@@ -9,24 +9,9 @@ class Mission
   BURN_RATE_IN_L_PER_MIN = 168_233
   AVERAGE_SPEED_IN_KMS_PER_HR = 1_500
   SECONDS_PER_HOURS = 3_600
+  SECONDS_PER_MINUTE = 60
 
-  # An individual mission should not be responsible for keeping track of the
-  # state of multiple missions over time; anything pertaining to
-  # multiple missions should be kept track of within MissionControl;
-  # MissionControl might have an array of mission instances, and in order to
-  # calculate the total time, total aborts, etc. it might include things
-  # like the following:
-  # total_time = missions.sum(&:time)
-  # total_distance = missions.sum(&:distance)
-  # ... where :time, and :distance correspond to public instance methods
-  #     on the Mission class.
-  # In this way, the responsibilities of Mission can be reduced; it can
-  # be restricted to handling a single mission only.
-  # MissionControl should have and know of multiple missions. An individual
-  # mission should only know about itself.
-  attr_reader :total_time, :exploded, :mission_reporter
-
-  attr_accessor :elapsed_time, :distance_traveled
+  attr_reader :elapsed_time, :mission_reporter, :distance_traveled, :total_time
 
   def initialize(mission_reporter: MissionReporter.new(self))
     @elapsed_time = 0
@@ -39,7 +24,7 @@ class Mission
   end
 
   def failed?
-    @aborted || exploded
+    @aborted || @exploded
   end
 
   def continue?
@@ -51,34 +36,18 @@ class Mission
   end
 
   def event_sequence
-    # event_sequence should be in a positition to break
-    # out of this process when any one of these steps
-    # fails (e.g. returns false). If they return true,
-    # you can continue to the next step. Calling `MissionControl.new.play_again?`
-    # to accomplish a break in control flow does not make sense; each
-    # event in the sequence should be called in such a way that its success
-    # or failure allows the next step to proceed without requiring the
-    # involvement of an outside class to inform control flow.
-
-    return false unless engage_afterburner
-    return false unless release_support_structures
-    return false unless perform_cross_checks
-    return false unless launch
-    mission_reporter.print_summary # remove; handle in `MissionControl`
-    @retries += 1
+    engage_afterburner
+    release_support_structures
+    perform_cross_checks
+    launch
   end
 
-  # TODO: fix bug where the mission summary prints the number of times that abort happen
   def engage_afterburner
-    # NEED: abort at any point in the process
-    # Change: #prompt_user so that it no longer mutates @aborted state
-    # idea:
     return abort! unless continue? && prompt_user('Engage afterburner?')
 
     if one_in_number(3)
       puts 'Mission aborted!'
-      @aborts += 1
-      MissionControl.new.play_again?
+      event_sequence
     else
       puts 'Afterburner engaged!'
     end
@@ -101,19 +70,12 @@ class Mission
 
     puts 'Launched!'
     if one_in_number(5)
-      # TODO: fix the random distance traveled before explosion
-      launch_step while (@distance_traveled + rand(TRAVEL_DISTANCE_IN_KMS)) <= TRAVEL_DISTANCE_IN_KMS
+      distance_to_explosion = rand(TRAVEL_DISTANCE_IN_KMS)
+      launch_step while @distance_traveled <= distance_to_explosion
       puts 'Your rocket exploded!'
-      @explosions += 1
     else
       launch_step while @distance_traveled <= TRAVEL_DISTANCE_IN_KMS
     end
-  end
-
-  # private
-
-  def abort!
-    @aborted = true
   end
 
   # This method is used to calculate an average current speed rather than just
@@ -137,11 +99,15 @@ class Mission
   end
 
   def total_fuel_burned
-    BURN_RATE_IN_L_PER_MIN * total_time / 60
+    BURN_RATE_IN_L_PER_MIN * total_time / SECONDS_PER_MINUTE
+  end
+
+  def abort!
+    @aborted = true
   end
 
   def launch_step
-    @total_time = @elapsed_time += 5
+    @total_time = (@elapsed_time += 5)
     @distance_traveled = current_distance_traveled
     mission_reporter.print_status
   end

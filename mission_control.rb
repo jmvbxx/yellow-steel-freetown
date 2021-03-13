@@ -5,12 +5,13 @@ require_relative 'cli'
 class MissionControl
   include Cli
 
-  attr_reader :mission_instance
+  attr_reader :mission_instance, :mission_reporter
 
-  def initialize(name: nil, mission_instance: MissionNew.new)
+  def initialize(name: nil, mission_instance: Mission.new, mission_reporter: MissionReporter.new(mission_instance))
     @name = name
     @missions = []
     @mission_instance = mission_instance
+    @mission_reporter = mission_reporter
     @mission_plan = MissionPlan.instance
     @retries = 0
   end
@@ -19,6 +20,7 @@ class MissionControl
     @mission_plan.print_plan
     select_name
     mission_instance.event_sequence
+    mission_reporter.print_summary
     play_again?
   end
 
