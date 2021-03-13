@@ -6,7 +6,7 @@ class Mission
   TRAVEL_DISTANCE_IN_KMS = 160
   PAYLOAD_CAPACITY_IN_KGS = 50_000
   FUEL_CAPACITY_IN_L = 1_514_100
-  BURN_RATE_IN_L_PER_MINS = 168_233
+  BURN_RATE_IN_L_PER_MIN = 168_233
   AVERAGE_SPEED_IN_KMS_PER_HR = 1_500
   SECONDS_PER_HOURS = 3_600
 
@@ -24,8 +24,7 @@ class Mission
   # be restricted to handling a single mission only.
   # MissionControl should have and know of multiple missions. An individual
   # mission should only know about itself.
-  attr_reader :total_time, :aborted, :exploded, :mission_reporter, :aborts,
-              :explosions, :retries
+  attr_reader :total_time, :exploded, :mission_reporter
 
   attr_accessor :elapsed_time, :distance_traveled
 
@@ -35,15 +34,12 @@ class Mission
     @distance_traveled = 0
     @aborted = false
     @exploded = false
-    @aborts = 0
-    @explosions = 0
-    @retries = 0
     @mission_reporter = mission_reporter
     @speeds_arr = []
   end
 
   def failed?
-    aborted || exploded
+    @aborted || exploded
   end
 
   def continue?
@@ -63,10 +59,11 @@ class Mission
     # event in the sequence should be called in such a way that its success
     # or failure allows the next step to proceed without requiring the
     # involvement of an outside class to inform control flow.
+
     return false unless engage_afterburner
     return false unless release_support_structures
     return false unless perform_cross_checks
-    launch
+    return false unless launch
     mission_reporter.print_summary # remove; handle in `MissionControl`
     @retries += 1
   end
@@ -77,6 +74,7 @@ class Mission
     # Change: #prompt_user so that it no longer mutates @aborted state
     # idea:
     return abort! unless continue? && prompt_user('Engage afterburner?')
+
     if one_in_number(3)
       puts 'Mission aborted!'
       @aborts += 1
@@ -88,16 +86,19 @@ class Mission
 
   def release_support_structures
     return abort! unless continue? && prompt_user('Release support structures?')
+
     puts 'Support structures released!'
   end
 
   def perform_cross_checks
     return abort! unless continue? && prompt_user('Perform cross-checks?')
+
     puts 'Cross-checks performed!'
   end
 
   def launch
     return abort! unless continue? && prompt_user('Launch?')
+
     puts 'Launched!'
     if one_in_number(5)
       # TODO: fix the random distance traveled before explosion
@@ -136,7 +137,7 @@ class Mission
   end
 
   def total_fuel_burned
-    BURN_RATE_IN_L_PER_MINS * total_time / 60
+    BURN_RATE_IN_L_PER_MIN * total_time / 60
   end
 
   def launch_step

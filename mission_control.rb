@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# Consider a helper like this that gets feedback from the user,
-# and that does not mutate any state.
 module Cli
   def prompt_user(prompt)
     print "#{prompt} (Y/n) "
@@ -33,6 +31,7 @@ class MissionControl
     play_again?
   end
 
+  # This is part of the requirements but is never used
   def select_name
     print 'What is the name of this mission? '
     name = gets.chomp
