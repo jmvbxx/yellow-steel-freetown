@@ -1,32 +1,41 @@
 # frozen_string_literal: true
 
+require_relative 'cli'
+
 class MissionControl
-  attr_reader :mission, :mission_plan
+  include Cli
 
-  attr_accessor :name
+  attr_reader :mission_instance, :mission_reporter
 
-  def initialize(name: nil, mission: Mission.new)
+  def initialize(name: nil, mission_instance: Mission.new, mission_reporter: MissionReporter.new(mission_instance))
     @name = name
-    @mission = mission
+    @missions = []
+    @mission_instance = mission_instance
+    @mission_reporter = mission_reporter
     @mission_plan = MissionPlan.instance
+    @retries = 0
   end
 
   def launch_sequence
     @mission_plan.print_plan
     select_name
-    mission.event_sequence
+    mission_instance.event_sequence
+    mission_reporter.print_summary
     play_again?
   end
 
+  # This is part of the requirements but is never used
   def select_name
     print 'What is the name of this mission? '
     name = gets.chomp
   end
 
   def play_again?
-    return unless mission.prompt_user('Would you like to launch again?')
+    return mission_instance.abort! unless prompt_user('Would you like to launch again?')
 
-    mission.elapsed_time = mission.distance_traveled = 0
-    launch_sequence
+    @missions << Mission.new
+    if mission_instance.continue?
+      launch_sequence
+    end
   end
 end

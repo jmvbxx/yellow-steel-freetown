@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
 class Mission
-  TRAVEL_DISTANCE = 160       # kilometers
-  PAYLOAD_CAPACITY = 50_000   # kilograms including the rocket itself
-  FUEL_CAPACITY = 1_514_100   # liters of fuel, already included in the payload total
-  BURN_RATE = 168_233         # liters per minute
-  AVERAGE_SPEED = 1_500       # kilometers/hr
+  include Cli
+
+  TRAVEL_DISTANCE_IN_KMS = 160
+  PAYLOAD_CAPACITY_IN_KGS = 50_000
+  FUEL_CAPACITY_IN_L = 1_514_100
+  BURN_RATE_IN_L_PER_MIN = 168_233
+  AVERAGE_SPEED_IN_KMS_PER_HR = 1_500
   SECONDS_PER_HOURS = 3_600
+  SECONDS_PER_MINUTE = 60
 
-  attr_reader :total_time, :aborted, :exploded, :mission_reporter, :aborts,
-              :explosions, :retries
-
-  attr_accessor :elapsed_time, :distance_traveled
+  attr_reader :elapsed_time, :mission_reporter, :distance_traveled, :total_time
 
   def initialize(mission_reporter: MissionReporter.new(self))
     @elapsed_time = 0
@@ -19,25 +19,16 @@ class Mission
     @distance_traveled = 0
     @aborted = false
     @exploded = false
-    @aborts = 0
-    @explosions = 0
-    @retries = 0
     @mission_reporter = mission_reporter
     @speeds_arr = []
   end
 
   def failed?
-    aborted || exploded
+    @aborted || @exploded
   end
 
   def continue?
     !failed?
-  end
-
-  def prompt_user(prompt)
-    print "#{prompt} (Y/n) "
-    @aborted = !gets.chomp.downcase.start_with?('y')
-    !@aborted
   end
 
   def one_in_number(number)
@@ -49,51 +40,46 @@ class Mission
     release_support_structures
     perform_cross_checks
     launch
-    mission_reporter.print_summary
-    @retries += 1
   end
 
-  # TODO: fix bug where the mission summary prints the number of times that abort happen
   def engage_afterburner
-    return unless continue? && prompt_user('Engage afterburner?')
+    return abort! unless continue? && prompt_user('Engage afterburner?')
 
     if one_in_number(3)
       puts 'Mission aborted!'
-      @aborts += 1
-      MissionControl.new.play_again?
+      event_sequence
     else
       puts 'Afterburner engaged!'
     end
   end
 
   def release_support_structures
-    return unless continue? && prompt_user('Release support structures?')
+    return abort! unless continue? && prompt_user('Release support structures?')
 
     puts 'Support structures released!'
   end
 
   def perform_cross_checks
-    return unless continue? && prompt_user('Perform cross-checks?')
+    return abort! unless continue? && prompt_user('Perform cross-checks?')
 
     puts 'Cross-checks performed!'
   end
 
   def launch
-    return unless continue? && prompt_user('Launch?')
+    return abort! unless continue? && prompt_user('Launch?')
 
     puts 'Launched!'
     if one_in_number(5)
-      # TODO: fix the random distance traveled before explosion
-      launch_step while (@distance_traveled + rand(TRAVEL_DISTANCE)) <= TRAVEL_DISTANCE
+      distance_to_explosion = rand(TRAVEL_DISTANCE_IN_KMS)
+      launch_step while @distance_traveled <= distance_to_explosion
       puts 'Your rocket exploded!'
-      @explosions += 1
     else
-      launch_step while @distance_traveled <= TRAVEL_DISTANCE
+      launch_step while @distance_traveled <= TRAVEL_DISTANCE_IN_KMS
     end
   end
 
-  # private
-
+  # This method is used to calculate an average current speed rather than just
+  # a fixed value of 1,500 km/h
   def current_speed
     @speeds_arr << rand(1400..1600).to_f
     average_speed = @speeds_arr.sum / @speeds_arr.size
@@ -101,8 +87,8 @@ class Mission
   end
 
   def time_to_destination
-    if @distance_traveled < 160
-      (TRAVEL_DISTANCE - current_distance_traveled) / current_speed
+    if @distance_traveled < TRAVEL_DISTANCE_IN_KMS
+      (TRAVEL_DISTANCE_IN_KMS - current_distance_traveled) / current_speed
     else
       0
     end
@@ -113,11 +99,15 @@ class Mission
   end
 
   def total_fuel_burned
-    BURN_RATE * total_time / 60
+    BURN_RATE_IN_L_PER_MIN * total_time / SECONDS_PER_MINUTE
+  end
+
+  def abort!
+    @aborted = true
   end
 
   def launch_step
-    @total_time = @elapsed_time += 5
+    @total_time = (@elapsed_time += 5)
     @distance_traveled = current_distance_traveled
     mission_reporter.print_status
   end
