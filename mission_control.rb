@@ -30,6 +30,7 @@ class MissionControl
     name = gets.chomp
   end
 
+  # TODO: The mission doesn't reset to allow for a new mission to run.
   def play_again?
     return mission.abort! unless prompt_user('Would you like to launch again?')
 

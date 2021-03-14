@@ -70,6 +70,9 @@ class Mission
   def engage_afterburner
     return abort! unless continue? && prompt_user('Engage afterburner?')
 
+    # TODO: When mission aborts it doesn't 'reset' when another mission is run
+    # and the entire `engage_afterburner` method is skipped on the next
+    # `event_sequence` run
     if one_in_number(3)
       puts 'Mission aborted!'
       event_sequence
