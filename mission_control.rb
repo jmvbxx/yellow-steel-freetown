@@ -5,12 +5,12 @@ require_relative 'cli'
 class MissionControl
   include Cli
 
-  attr_reader :mission_instance, :mission_reporter
+  attr_reader :mission, :mission_reporter
 
-  def initialize(name: nil, mission_instance: Mission.new, mission_reporter: MissionReporter.new(mission_instance))
+  def initialize(name: nil, mission: Mission.new, mission_reporter: MissionReporter.new(mission))
     @name = name
     @missions = []
-    @mission_instance = mission_instance
+    @mission = mission
     @mission_reporter = mission_reporter
     @mission_plan = MissionPlan.instance
     @retries = 0
@@ -19,7 +19,7 @@ class MissionControl
   def launch_sequence
     @mission_plan.print_plan
     select_name
-    mission_instance.event_sequence
+    mission.event_sequence
     mission_reporter.print_summary
     play_again?
   end
@@ -31,10 +31,10 @@ class MissionControl
   end
 
   def play_again?
-    return mission_instance.abort! unless prompt_user('Would you like to launch again?')
+    return mission.abort! unless prompt_user('Would you like to launch again?')
 
     @missions << Mission.new
-    if mission_instance.continue?
+    if mission.continue?
       launch_sequence
     end
   end

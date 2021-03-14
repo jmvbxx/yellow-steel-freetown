@@ -18,13 +18,12 @@ class Mission
     @total_time = 0
     @distance_traveled = 0
     @aborted = false
-    @exploded = false
     @mission_reporter = mission_reporter
     @speeds_arr = []
   end
 
   def failed?
-    @aborted || @exploded
+    @aborted
   end
 
   def continue?
