@@ -33,7 +33,7 @@ class MissionControl
   def play_again?
     return mission.abort! unless prompt_user('Would you like to launch again?')
 
-    @missions << Mission.new
+    @missions << mission
     if mission.continue?
       launch_sequence
     end
