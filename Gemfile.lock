@@ -39,6 +39,7 @@ GEM
     rubocop-ast (1.4.1)
       parser (>= 2.7.1.5)
     ruby-progressbar (1.11.0)
+    tracer (0.1.1)
     unicode-display_width (2.0.0)
 
 PLATFORMS
@@ -48,6 +49,7 @@ DEPENDENCIES
   pry
   rspec
   rubocop
+  tracer
 
 BUNDLED WITH
    2.1.4
