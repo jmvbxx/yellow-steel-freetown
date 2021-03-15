@@ -30,11 +30,19 @@ class MissionControl
     name = gets.chomp
   end
 
-  # TODO: The mission doesn't reset to allow for a new mission to run.
+  # TODO: The mission resets but `print_status` doesn't work and `print_summary`
+  # prints outs the summary of the original mission (except when there's an
+  # explosion in which case mission reporting works properly)
   def play_again?
     return mission.abort! unless prompt_user('Would you like to launch again?')
 
     @missions << mission
+    total_distance_traveled = @missions.sum(&:distance_traveled)
+    total_elapsed_time = @missions.sum(&:elapsed_time)
+    puts '********** Testing **********'
+    puts "Total distance traveled is #{total_distance_traveled}"
+    puts "Total elapsed time is #{total_elapsed_time}"
+    puts '*****************************'
     if mission.continue?
       launch_sequence
     end
