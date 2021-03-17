@@ -22,7 +22,7 @@ class MissionReporter
     puts "  Number of aborts and retries: 0/0"
     puts "  Number of explosions: 0"
     puts "  Total fuel burned: #{mission.total_fuel_burned.round(0)} liters"
-    puts "  Flight time: #{seconds_to_hms(mission.total_time)}"
+    puts "  Flight time: #{seconds_to_hms(mission.elapsed_time)}"
   end
 
   private

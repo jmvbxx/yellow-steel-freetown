@@ -30,9 +30,6 @@ class MissionControl
     name = gets.chomp
   end
 
-  # TODO: The mission resets but `print_status` doesn't work and `print_summary`
-  # prints outs the summary of the original mission (except when there's an
-  # explosion in which case mission reporting works properly)
   def play_again?
     return mission.abort! unless prompt_user('Would you like to launch again?')
 
@@ -44,6 +41,7 @@ class MissionControl
     puts "Total elapsed time is #{total_elapsed_time}"
     puts '*****************************'
     if mission.continue?
+      Mission.new
       launch_sequence
     end
   end

@@ -11,23 +11,18 @@ class Mission
   SECONDS_PER_HOURS = 3_600
   SECONDS_PER_MINUTE = 60
 
-  attr_reader :elapsed_time, :mission_reporter, :distance_traveled, :total_time
+  attr_reader :elapsed_time, :mission_reporter, :distance_traveled
 
   def initialize(mission_reporter: MissionReporter.new(self))
     @elapsed_time = 0
-    @total_time = 0
     @distance_traveled = 0
     @aborted = false
     @mission_reporter = mission_reporter
     @speeds_arr = []
   end
 
-  def failed?
-    @aborted
-  end
-
   def continue?
-    !failed?
+    !@aborted
   end
 
   def one_in_number(number)
@@ -39,6 +34,7 @@ class Mission
     release_support_structures
     perform_cross_checks
     launch
+    binding.pry
   end
 
   # This method is used to calculate an average current speed rather than just
@@ -58,7 +54,7 @@ class Mission
   end
 
   def total_fuel_burned
-    BURN_RATE_IN_L_PER_MIN * total_time / SECONDS_PER_MINUTE
+    BURN_RATE_IN_L_PER_MIN * elapsed_time / SECONDS_PER_MINUTE
   end
 
   def abort!
@@ -102,6 +98,8 @@ class Mission
       launch_step while @distance_traveled <= distance_to_explosion
       puts 'Your rocket exploded!'
     else
+      @elapsed_time = 0
+      @distance_traveled = 0
       launch_step while @distance_traveled <= TRAVEL_DISTANCE_IN_KMS
     end
   end
@@ -111,7 +109,7 @@ class Mission
   end
 
   def launch_step
-    @total_time = (@elapsed_time += 5)
+    @elapsed_time += 5
     @distance_traveled = current_distance_traveled
     mission_reporter.print_status
   end
