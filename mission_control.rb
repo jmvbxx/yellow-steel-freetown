@@ -11,7 +11,7 @@ class MissionControl
 
   @retries = 0
   class << self
-    attr_accessor :retries
+    attr_accessor :retries, :total_distance_traveled, :total_elapsed_time
   end
 
   def initialize(name: nil, mission: Mission.new, mission_reporter: MissionReporter.new(mission))
@@ -26,7 +26,7 @@ class MissionControl
     @mission_plan.print_plan
     select_name
     mission.event_sequence
-    mission_reporter.print_summary
+    mission_report
     play_again?
   end
 
@@ -36,18 +36,17 @@ class MissionControl
     name = gets.chomp
   end
 
+  def mission_report
+    @missions << mission
+    self.class.total_distance_traveled = @missions.sum(&:distance_traveled)
+    self.class.total_elapsed_time = @missions.sum(&:elapsed_time)
+    mission_reporter.print_summary
+  end
+
   def play_again?
     return mission.abort! unless prompt_user('Would you like to launch again?')
 
     self.class.retries += 1
-    @missions << mission
-    total_distance_traveled = @missions.sum(&:distance_traveled)
-    total_elapsed_time = @missions.sum(&:elapsed_time)
-    puts '********** Testing **********'
-    puts "Total distance traveled is #{total_distance_traveled}"
-    puts "Total elapsed time is #{total_elapsed_time}"
-    puts '*****************************'
-
     self.mission = Mission.new
     launch_sequence
   end
