@@ -5,7 +5,14 @@ require_relative 'cli'
 class MissionControl
   include Cli
 
-  attr_reader :mission, :mission_reporter
+  attr_reader :mission_reporter
+
+  attr_accessor :mission
+
+  @retries = 0
+  class << self
+    attr_accessor :retries
+  end
 
   def initialize(name: nil, mission: Mission.new, mission_reporter: MissionReporter.new(mission))
     @name = name
@@ -13,7 +20,6 @@ class MissionControl
     @mission = mission
     @mission_reporter = mission_reporter
     @mission_plan = MissionPlan.instance
-    @retries = 0
   end
 
   def launch_sequence
@@ -33,6 +39,7 @@ class MissionControl
   def play_again?
     return mission.abort! unless prompt_user('Would you like to launch again?')
 
+    self.class.retries += 1
     @missions << mission
     total_distance_traveled = @missions.sum(&:distance_traveled)
     total_elapsed_time = @missions.sum(&:elapsed_time)
@@ -40,9 +47,8 @@ class MissionControl
     puts "Total distance traveled is #{total_distance_traveled}"
     puts "Total elapsed time is #{total_elapsed_time}"
     puts '*****************************'
-    if mission.continue?
-      Mission.new
-      launch_sequence
-    end
+
+    self.mission = Mission.new
+    launch_sequence
   end
 end
