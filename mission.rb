@@ -11,7 +11,7 @@ class Mission
   SECONDS_PER_HOURS = 3_600
   SECONDS_PER_MINUTE = 60
 
-  attr_reader :elapsed_time, :distance_traveled
+  attr_reader :elapsed_time, :distance_traveled, :aborts, :explosions
 
   attr_accessor :mission_reporter
 
@@ -21,6 +21,8 @@ class Mission
     @distance_traveled = 0
     @aborted = false
     @speeds_arr = []
+    @aborts = 0
+    @explosions = 0
   end
 
   def continue?
@@ -72,6 +74,7 @@ class Mission
     # `event_sequence` run
     if one_in_number(3)
       puts 'Mission aborted!'
+      @aborts += 1
       event_sequence
     else
       puts 'Afterburner engaged!'
@@ -97,6 +100,7 @@ class Mission
     if one_in_number(5)
       distance_to_explosion = rand(TRAVEL_DISTANCE_IN_KMS)
       launch_step while @distance_traveled <= distance_to_explosion
+      @explosions += 1
       puts 'Your rocket exploded!'
     else
       launch_step while @distance_traveled <= TRAVEL_DISTANCE_IN_KMS
