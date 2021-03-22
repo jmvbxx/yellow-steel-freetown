@@ -79,7 +79,6 @@ class Mission
     if one_in_number(3)
       puts 'Mission aborted!'
       self.class.aborts += 1
-      binding.pry
       event_sequence
     else
       puts 'Afterburner engaged!'
@@ -102,7 +101,7 @@ class Mission
     return abort! unless continue? && prompt_user('Launch?')
 
     puts 'Launched!'
-    if one_in_number(99)
+    if one_in_number(5)
       distance_to_explosion = rand(TRAVEL_DISTANCE_IN_KMS)
       launch_step while @distance_traveled <= distance_to_explosion
       self.class.explosions += 1
