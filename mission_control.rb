@@ -30,6 +30,8 @@ class MissionControl
     play_again?
   end
 
+  private
+
   # This is part of the requirements but is never used
   def select_name
     print 'What is the name of this mission? '

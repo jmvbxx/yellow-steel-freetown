@@ -19,8 +19,8 @@ class MissionReporter
   def print_summary
     puts 'Mission summary:'
     puts "  Total distance traveled: #{MissionControl.total_distance_traveled.round(2)} km"
-    puts "  Number of aborts and retries: #{mission.aborts}/#{MissionControl.retries}"
-    puts "  Number of explosions: #{mission.explosions}"
+    puts "  Number of aborts and retries: #{Mission.aborts}/#{MissionControl.retries}"
+    puts "  Number of explosions: #{Mission.explosions}"
     puts "  Total fuel burned: #{mission.total_fuel_burned.round(0)} liters"
     puts "  Flight time: #{seconds_to_hms(MissionControl.total_elapsed_time)}"
   end

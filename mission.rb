@@ -15,14 +15,18 @@ class Mission
 
   attr_accessor :mission_reporter
 
-    def initialize(mission_reporter: MissionReporter.new(self))
+  @aborts = 0
+  @explosions = 0
+  class << self
+    attr_accessor :aborts, :explosions
+  end
+
+  def initialize(mission_reporter: MissionReporter.new(self))
     @mission_reporter = mission_reporter
     @elapsed_time = 0
     @distance_traveled = 0
     @aborted = false
     @speeds_arr = []
-    @aborts = 0
-    @explosions = 0
   end
 
   def continue?
@@ -74,7 +78,8 @@ class Mission
     # `event_sequence` run
     if one_in_number(3)
       puts 'Mission aborted!'
-      @aborts += 1
+      self.class.aborts += 1
+      binding.pry
       event_sequence
     else
       puts 'Afterburner engaged!'
@@ -97,10 +102,10 @@ class Mission
     return abort! unless continue? && prompt_user('Launch?')
 
     puts 'Launched!'
-    if one_in_number(5)
+    if one_in_number(99)
       distance_to_explosion = rand(TRAVEL_DISTANCE_IN_KMS)
       launch_step while @distance_traveled <= distance_to_explosion
-      @explosions += 1
+      self.class.explosions += 1
       puts 'Your rocket exploded!'
     else
       launch_step while @distance_traveled <= TRAVEL_DISTANCE_IN_KMS
