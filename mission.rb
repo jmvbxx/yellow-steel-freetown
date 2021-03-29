@@ -39,7 +39,7 @@ class Mission
   end
 
   def event_sequence
-    name
+    @name ||= name
     engage_afterburner
     release_support_structures
     perform_cross_checks
@@ -74,7 +74,11 @@ class Mission
 
   def name
     print 'What is the name of this mission? '
-    gets.chomp
+    @name = gets.chomp
+  end
+
+  def rename?
+    prompt_user('Do you want to rename your mission?')
   end
 
   def engage_afterburner
@@ -86,6 +90,7 @@ class Mission
     if one_in_number(3)
       puts 'Mission aborted!'
       self.class.aborts += 1
+      name if rename?
       event_sequence
     else
       puts 'Afterburner engaged!'
