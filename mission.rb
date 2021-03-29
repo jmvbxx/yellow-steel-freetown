@@ -21,7 +21,8 @@ class Mission
     attr_accessor :aborts, :explosions
   end
 
-  def initialize(mission_reporter: MissionReporter.new(self))
+  def initialize(name: nil, mission_reporter: MissionReporter.new(self))
+    @name = name
     @mission_reporter = mission_reporter
     @elapsed_time = 0
     @distance_traveled = 0
@@ -38,6 +39,7 @@ class Mission
   end
 
   def event_sequence
+    name
     engage_afterburner
     release_support_structures
     perform_cross_checks
@@ -69,6 +71,11 @@ class Mission
   end
 
   private
+
+  def name
+    print 'What is the name of this mission? '
+    gets.chomp
+  end
 
   def engage_afterburner
     return abort! unless continue? && prompt_user('Engage afterburner?')

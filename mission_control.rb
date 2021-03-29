@@ -14,8 +14,7 @@ class MissionControl
     attr_accessor :retries, :total_distance_traveled, :total_elapsed_time
   end
 
-  def initialize(name: nil, mission: Mission.new, mission_reporter: MissionReporter.new(mission))
-    @name = name
+  def initialize(mission: Mission.new, mission_reporter: MissionReporter.new(mission))
     @missions = []
     @mission = mission
     @mission_reporter = mission_reporter
@@ -24,18 +23,12 @@ class MissionControl
 
   def launch_sequence
     @mission_plan.print_plan
-    select_name
     mission.event_sequence
     mission_report
     play_again?
   end
 
   private
-
-  def select_name
-    print 'What is the name of this mission? '
-    name = gets.chomp # rubocop:disable Lint/UselessAssignment
-  end
 
   def mission_report
     @missions << mission
