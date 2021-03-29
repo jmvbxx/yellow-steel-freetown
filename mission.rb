@@ -11,7 +11,7 @@ class Mission
   SECONDS_PER_HOURS = 3_600
   SECONDS_PER_MINUTE = 60
 
-  attr_reader :elapsed_time, :distance_traveled, :aborts, :explosions
+  attr_reader :elapsed_time, :distance_traveled
 
   attr_accessor :mission_reporter
 
