@@ -34,6 +34,6 @@ class MissionReporter
   private
 
   def seconds_to_hms(sec)
-    format('%02d:%02d:%02d', sec / 3600, sec / 60 % 60, sec % 60)
+    format('%02d:%02d:%02d', sec / 3600, sec / 60 % 60, sec % 60) # rubocop:disable Style/FormatStringToken
   end
 end
