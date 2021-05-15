@@ -3,15 +3,7 @@
 class Mission
   include Cli
 
-  TRAVEL_DISTANCE_IN_KMS = 160
-  PAYLOAD_CAPACITY_IN_KGS = 50_000
-  FUEL_CAPACITY_IN_L = 1_514_100
-  BURN_RATE_IN_L_PER_MIN = 168_233
-  AVERAGE_SPEED_IN_KMS_PER_HR = 1_500
-  SECONDS_PER_HOURS = 3_600
-  SECONDS_PER_MINUTE = 60
-
-  attr_reader :elapsed_time, :distance_traveled
+  attr_reader :elapsed_time
 
   attr_accessor :mission_reporter
 
@@ -25,9 +17,8 @@ class Mission
     @name = name
     @mission_reporter = mission_reporter
     @elapsed_time = 0
-    @distance_traveled = 0
     @aborted = false
-    @speeds_arr = []
+    @rocket = SpaceCraft.new
   end
 
   def continue?
@@ -44,26 +35,6 @@ class Mission
     release_support_structures
     perform_cross_checks
     launch
-  end
-
-  # This method is used to calculate an average current speed rather than just
-  # a fixed value of 1,500 km/h
-  def current_speed
-    @speeds_arr << rand(1400..1600).to_f
-    average_speed = @speeds_arr.sum / @speeds_arr.size
-    average_speed / SECONDS_PER_HOURS
-  end
-
-  def time_to_destination
-    if @distance_traveled < TRAVEL_DISTANCE_IN_KMS
-      (TRAVEL_DISTANCE_IN_KMS - current_distance_traveled) / current_speed
-    else
-      0
-    end
-  end
-
-  def total_fuel_burned
-    BURN_RATE_IN_L_PER_MIN * elapsed_time / SECONDS_PER_MINUTE
   end
 
   def abort!
@@ -114,7 +85,7 @@ class Mission
 
     puts 'Launched!'
     if one_in_number(5)
-      distance_to_explosion = rand(TRAVEL_DISTANCE_IN_KMS)
+      distance_to_explosion = rand(SpaceCraft::TRAVEL_DISTANCE_IN_KMS)
       launch_step while @distance_traveled <= distance_to_explosion
       self.class.explosions += 1
       puts 'Your rocket exploded!'
