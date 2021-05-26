@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SpaceCraft
-  TRAVEL_DISTANCE_IN_KMS = 160
+  TARGET_DISTANCE_IN_KMS = 160
   PAYLOAD_CAPACITY_IN_KGS = 50_000
   FUEL_CAPACITY_IN_L = 1_514_100
   BURN_RATE_IN_L_PER_MIN = 168_233
@@ -9,14 +9,15 @@ class SpaceCraft
   SECONDS_PER_HOURS = 3_600
   SECONDS_PER_MINUTE = 60
 
-  attr_reader :distance_traveled
+  attr_reader :distance_traveled, :mission
 
   @explosions = 0
   class << self
     attr_accessor :explosions
   end
 
-  def initialize
+  def initialize(mission)
+    @mission = mission
     @distance_traveled = 0
     @speeds_arr = []
   end
@@ -30,14 +31,18 @@ class SpaceCraft
   end
 
   def time_to_destination
-    if @distance_traveled < TRAVEL_DISTANCE_IN_KMS
-      (TRAVEL_DISTANCE_IN_KMS - current_distance_traveled) / current_speed
+    if @distance_traveled < TARGET_DISTANCE_IN_KMS
+      (TARGET_DISTANCE_IN_KMS - current_distance_traveled) / current_speed
     else
       0
     end
   end
 
   def total_fuel_burned
-    BURN_RATE_IN_L_PER_MIN * elapsed_time / SECONDS_PER_MINUTE
+    BURN_RATE_IN_L_PER_MIN * @mission.elapsed_time / SECONDS_PER_MINUTE
+  end
+
+  def current_distance_traveled
+    current_speed * @mission.elapsed_time
   end
 end

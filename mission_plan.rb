@@ -12,7 +12,7 @@ class MissionPlan
   def print_plan
     plan = <<~PLAN
       Mission plan:
-        Travel distance: #{SpaceCraft::TRAVEL_DISTANCE_IN_KMS} km
+        Travel distance: #{SpaceCraft::TARGET_DISTANCE_IN_KMS} km
         Payload capacity: #{SpaceCraft::PAYLOAD_CAPACITY_IN_KGS} kg
         Fuel capacity: #{SpaceCraft::FUEL_CAPACITY_IN_L} liters
         Burn rate: #{SpaceCraft::BURN_RATE_IN_L_PER_MIN} liters/min
