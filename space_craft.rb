@@ -15,8 +15,6 @@ class SpaceCraft
   end
 
   def initialize
-    # @mission = mission
-    @distance_traveled = 0
     @speeds_arr = []
   end
 
@@ -26,13 +24,5 @@ class SpaceCraft
     @speeds_arr << rand(1400..1600).to_f
     average_speed = @speeds_arr.sum / @speeds_arr.size
     average_speed / SECONDS_PER_HOURS
-  end
-
-  def time_to_destination
-    if @distance_traveled < TARGET_DISTANCE_IN_KMS
-      (TARGET_DISTANCE_IN_KMS - current_distance_traveled) / current_speed
-    else
-      0
-    end
   end
 end
