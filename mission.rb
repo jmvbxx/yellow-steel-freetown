@@ -8,8 +8,9 @@ class Mission
   attr_accessor :mission_reporter
 
   @aborts = 0
+  @explosions = 0
   class << self
-    attr_accessor :aborts
+    attr_accessor :aborts, :explosions
   end
 
   def initialize(name: nil, mission_reporter: MissionReporter.new(self, SpaceCraft.new(self)))
@@ -58,7 +59,7 @@ class Mission
     # TODO: When mission aborts it doesn't 'reset' when another mission is run
     # and the entire `engage_afterburner` method is skipped on the next
     # `event_sequence` run
-    if one_in_number(99)
+    if one_in_number(3)
       puts 'Mission aborted!'
       self.class.aborts += 1
       name if rename?
@@ -84,7 +85,7 @@ class Mission
     return abort! unless continue? && prompt_user('Launch?')
 
     puts 'Launched!'
-    if one_in_number(99)
+    if one_in_number(5)
       distance_to_explosion = rand(SpaceCraft::TARGET_DISTANCE_IN_KMS)
       launch_step while @space_craft.distance_traveled <= distance_to_explosion
       self.class.explosions += 1

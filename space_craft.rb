@@ -39,7 +39,7 @@ class SpaceCraft
   end
 
   def total_fuel_burned
-    BURN_RATE_IN_L_PER_MIN * @mission.elapsed_time / SECONDS_PER_MINUTE
+    BURN_RATE_IN_L_PER_MIN * mission.elapsed_time / SECONDS_PER_MINUTE
   end
 
   def current_distance_traveled
