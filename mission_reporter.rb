@@ -26,7 +26,7 @@ class MissionReporter
         Total distance traveled: #{MissionControl.total_distance_traveled.round(2)} km
         Number of aborts and retries: #{Mission.aborts}/#{MissionControl.retries}
         Number of explosions: #{Mission.explosions}
-        Total fuel burned: #{space_craft.total_fuel_burned.round(0)} liters
+        Total fuel burned: #{mission.total_fuel_burned.round(0)} liters
         Flight time: #{seconds_to_hms(MissionControl.total_elapsed_time)}
     SUMMARY
     puts summary

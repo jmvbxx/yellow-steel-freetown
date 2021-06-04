@@ -14,7 +14,7 @@ class MissionControl
     attr_accessor :retries, :total_distance_traveled, :total_elapsed_time
   end
 
-  def initialize(mission: Mission.new, mission_reporter: MissionReporter.new(mission, SpaceCraft.new(Mission.new)))
+  def initialize(mission: Mission.new, mission_reporter: MissionReporter.new(mission, SpaceCraft.new))
     @missions = []
     @mission = mission
     @mission_reporter = mission_reporter

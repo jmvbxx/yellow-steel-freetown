@@ -9,15 +9,13 @@ class SpaceCraft
   SECONDS_PER_HOURS = 3_600
   SECONDS_PER_MINUTE = 60
 
-  attr_reader :distance_traveled, :mission
-
   @explosions = 0
   class << self
     attr_accessor :explosions
   end
 
-  def initialize(mission)
-    @mission = mission
+  def initialize
+    # @mission = mission
     @distance_traveled = 0
     @speeds_arr = []
   end
@@ -36,13 +34,5 @@ class SpaceCraft
     else
       0
     end
-  end
-
-  def total_fuel_burned
-    BURN_RATE_IN_L_PER_MIN * mission.elapsed_time / SECONDS_PER_MINUTE
-  end
-
-  def current_distance_traveled
-    current_speed * @mission.elapsed_time
   end
 end
