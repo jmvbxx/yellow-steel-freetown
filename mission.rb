@@ -5,6 +5,8 @@ class Mission
 
   attr_reader :elapsed_time, :distance_traveled
 
+  attr_accessor :space_craft
+
   @aborts = 0
   @explosions = 0
   class << self
@@ -32,7 +34,6 @@ class Mission
     engage_afterburner
     release_support_structures
     perform_cross_checks
-    launch
   end
 
   def abort!
@@ -81,30 +82,5 @@ class Mission
     return abort! unless continue? && prompt_user('Perform cross-checks?')
 
     puts 'Cross-checks performed!'
-  end
-
-  def launch
-    return abort! unless continue? && prompt_user('Launch?')
-
-    puts 'Launched!'
-    if one_in_number(99)
-      distance_to_explosion = rand(SpaceCraft::TARGET_DISTANCE_IN_KMS)
-      launch_step while distance_traveled <= distance_to_explosion
-      self.class.explosions += 1
-      puts 'Your rocket exploded!'
-    else
-      launch_step while distance_traveled <= SpaceCraft::TARGET_DISTANCE_IN_KMS
-    end
-  end
-
-  def launch_step
-    @elapsed_time += 5
-    @distance_traveled = current_distance_traveled
-    # binding.pry
-    # mission_reporter.print_status
-  end
-
-  def current_distance_traveled
-    @space_craft.current_speed * elapsed_time
   end
 end
