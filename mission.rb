@@ -3,15 +3,7 @@
 class Mission
   include Cli
 
-  attr_reader :elapsed_time, :distance_traveled
-
-  attr_accessor :space_craft
-
-  @aborts = 0
-  @explosions = 0
-  class << self
-    attr_accessor :aborts, :explosions
-  end
+  attr_accessor :aborts, :space_craft, :elapsed_time, :distance_traveled
 
   def initialize(name: nil, space_craft: SpaceCraft.new)
     @name = name
@@ -19,6 +11,7 @@ class Mission
     @distance_traveled = 0
     @aborted = false
     @space_craft = space_craft
+    @aborts = 0
   end
 
   def continue?
@@ -41,7 +34,7 @@ class Mission
   end
 
   # TODO: This is not calculating properly over multiple missions
-  def total_fuel_burned
+  def fuel_burned
     SpaceCraft::BURN_RATE_IN_L_PER_MIN * elapsed_time / SpaceCraft::SECONDS_PER_MINUTE
   end
 
@@ -64,7 +57,7 @@ class Mission
     # `event_sequence` run
     if one_in_number(99)
       puts 'Mission aborted!'
-      self.class.aborts += 1
+      @aborts += 1
       name if rename?
       event_sequence
     else

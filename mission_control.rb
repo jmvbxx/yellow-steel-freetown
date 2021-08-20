@@ -5,11 +5,12 @@ require_relative 'cli'
 class MissionControl
   include Cli
 
-  attr_reader :distance_traveled, :elapsed_time, :total_distance_traveled, :total_elapsed_time
+  attr_accessor :total_distance_traveled, :total_elapsed_time, :total_fuel_burned, :mission
 
   @retries = 0
+  @explosions = 0
   class << self
-    attr_accessor :retries
+    attr_accessor :retries, :explosions
   end
 
   def initialize(mission: Mission.new, mission_reporter: MissionReporter.new(mission, self))
@@ -17,22 +18,25 @@ class MissionControl
     @mission = mission
     @mission_reporter = mission_reporter
     @mission_plan = MissionPlan.instance
-    @distance_traveled = 0
-    @elapsed_time = 0
     @total_distance_traveled = 0
     @total_elapsed_time = 0
+    @total_fuel_burned = 0
+    @retries = 0
+    @explosions = 0
   end
 
   def launch_sequence
     @mission_plan.print_plan
     @mission.event_sequence
     launch
+    @missions << @mission
     mission_report
     play_again?
   end
 
+
   def time_to_destination
-    if @distance_traveled < SpaceCraft::TARGET_DISTANCE_IN_KMS
+    if @mission.distance_traveled < SpaceCraft::TARGET_DISTANCE_IN_KMS
       (SpaceCraft::TARGET_DISTANCE_IN_KMS - current_distance_traveled) / @mission.space_craft.current_speed
     else
       0
@@ -42,9 +46,9 @@ class MissionControl
   private
 
   def mission_report
-    @missions << @mission
     @total_distance_traveled = @missions.sum(&:distance_traveled)
     @total_elapsed_time = @missions.sum(&:elapsed_time)
+    @total_fuel_burned = @missions.sum(&:fuel_burned)
     @mission_reporter.print_summary
   end
 
@@ -60,23 +64,23 @@ class MissionControl
     return @mission.abort! unless @mission.continue? && prompt_user('Launch?')
 
     puts 'Launched!'
-    if @mission.one_in_number(99)
+    if @mission.one_in_number(5)
       distance_to_explosion = rand(SpaceCraft::TARGET_DISTANCE_IN_KMS)
-      launch_step while @distance_traveled <= distance_to_explosion
+      launch_step while @mission.distance_traveled <= distance_to_explosion
       self.class.explosions += 1
       puts 'Your rocket exploded!'
     else
-      launch_step while @distance_traveled <= SpaceCraft::TARGET_DISTANCE_IN_KMS
+      launch_step while @mission.distance_traveled <= SpaceCraft::TARGET_DISTANCE_IN_KMS
     end
   end
 
   def launch_step
-    @elapsed_time += 5
-    @distance_traveled = current_distance_traveled
+    @mission.elapsed_time += 5
+    @mission.distance_traveled = current_distance_traveled
     @mission_reporter.print_status
   end
 
   def current_distance_traveled
-    @mission.space_craft.current_speed * @elapsed_time
+    @mission.space_craft.current_speed * @mission.elapsed_time
   end
 end
