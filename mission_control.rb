@@ -8,9 +8,8 @@ class MissionControl
   attr_accessor :total_distance_traveled, :total_elapsed_time, :total_fuel_burned, :mission
 
   @retries = 0
-  @explosions = 0
   class << self
-    attr_accessor :retries, :explosions
+    attr_accessor :retries
   end
 
   def initialize(mission: Mission.new, mission_reporter: MissionReporter.new(mission, self))
@@ -22,7 +21,6 @@ class MissionControl
     @total_elapsed_time = 0
     @total_fuel_burned = 0
     @retries = 0
-    @explosions = 0
   end
 
   def launch_sequence
@@ -67,7 +65,7 @@ class MissionControl
     if @mission.one_in_number(5)
       distance_to_explosion = rand(SpaceCraft::TARGET_DISTANCE_IN_KMS)
       launch_step while @mission.distance_traveled <= distance_to_explosion
-      self.class.explosions += 1
+      @mission.explosions += 1
       puts 'Your rocket exploded!'
     else
       launch_step while @mission.distance_traveled <= SpaceCraft::TARGET_DISTANCE_IN_KMS

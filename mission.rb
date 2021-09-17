@@ -3,7 +3,7 @@
 class Mission
   include Cli
 
-  attr_accessor :aborts, :space_craft, :elapsed_time, :distance_traveled
+  attr_accessor :aborts, :explosions, :space_craft, :elapsed_time, :distance_traveled
 
   def initialize(name: nil, space_craft: SpaceCraft.new)
     @name = name
@@ -12,6 +12,7 @@ class Mission
     @aborted = false
     @space_craft = space_craft
     @aborts = 0
+    @explosions = 0
   end
 
   def continue?
@@ -33,7 +34,6 @@ class Mission
     @aborted = true
   end
 
-  # TODO: This is not calculating properly over multiple missions
   def fuel_burned
     SpaceCraft::BURN_RATE_IN_L_PER_MIN * elapsed_time / SpaceCraft::SECONDS_PER_MINUTE
   end
@@ -52,10 +52,7 @@ class Mission
   def engage_afterburner
     return abort! unless continue? && prompt_user('Engage afterburner?')
 
-    # TODO: When mission aborts it doesn't 'reset' when another mission is run
-    # and the entire `engage_afterburner` method is skipped on the next
-    # `event_sequence` run
-    if one_in_number(99)
+    if one_in_number(3)
       puts 'Mission aborted!'
       @aborts += 1
       name if rename?

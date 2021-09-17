@@ -24,14 +24,10 @@ class MissionReporter
       Mission summary:
         Total distance traveled: #{@mission_control.total_distance_traveled.round(2)} km
         Number of aborts and retries: #{@mission_control.mission.aborts}/#{MissionControl.retries}
-        Number of explosions: #{MissionControl.explosions}
+        Number of explosions: #{@mission_control.mission.explosions}
         Total fuel burned: #{@mission_control.total_fuel_burned.round(0)} liters
         Total flight time: #{seconds_to_hms(@mission_control.total_elapsed_time)}
     SUMMARY
-
-    # fix line 27
-    # investigate class instance vs method instance
-
     puts summary
   end
 
@@ -41,5 +37,3 @@ class MissionReporter
     format('%02d:%02d:%02d', sec / 3600, sec / 60 % 60, sec % 60) # rubocop:disable Style/FormatStringToken
   end
 end
-
-
