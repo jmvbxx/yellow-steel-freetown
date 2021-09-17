@@ -13,7 +13,7 @@ class MissionReporter
         Current fuel burn rate: #{SpaceCraft::BURN_RATE_IN_L_PER_MIN} liters/min
         Current speed: #{(@mission.space_craft.current_speed * SpaceCraft::SECONDS_PER_HOURS).round(2)} km/h
         Elapsed time: #{seconds_to_hms(@mission.elapsed_time)}
-        Distance traveled: #{@mission_control.distance_traveled.round(2)} km
+        Distance traveled: #{@mission.distance_traveled.round(2)} km
         Time to destination: #{@mission_control.time_to_destination.round(2)} seconds
     STATUS
     puts status
@@ -23,10 +23,10 @@ class MissionReporter
     summary = <<~SUMMARY
       Mission summary:
         Total distance traveled: #{@mission_control.total_distance_traveled.round(2)} km
-        Number of aborts and retries: #{Mission.aborts}/#{MissionControl.retries}
-        Number of explosions: #{Mission.explosions}
-        Total fuel burned: #{@mission.total_fuel_burned.round(0)} liters
-        Flight time: #{seconds_to_hms(@mission_control.total_elapsed_time)}
+        Number of aborts and retries: #{@mission_control.mission.aborts}/#{MissionControl.retries}
+        Number of explosions: #{@mission_control.mission.explosions}
+        Total fuel burned: #{@mission_control.total_fuel_burned.round(0)} liters
+        Total flight time: #{seconds_to_hms(@mission_control.total_elapsed_time)}
     SUMMARY
     puts summary
   end

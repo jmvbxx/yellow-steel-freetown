@@ -7,6 +7,6 @@ require_relative 'mission'
 require_relative 'space_craft'
 require 'pry'
 
-mission_collections = MissionControl.new(mission: Mission.new)
+mission_control = MissionControl.new(mission: Mission.new)
 puts 'Welcome to yellow-steel-freetown!'
-mission_collections.launch_sequence
+mission_control.launch_sequence

@@ -9,11 +9,6 @@ class SpaceCraft
   SECONDS_PER_HOURS = 3_600
   SECONDS_PER_MINUTE = 60
 
-  @explosions = 0
-  class << self
-    attr_accessor :explosions
-  end
-
   def initialize
     @speeds_arr = []
   end
