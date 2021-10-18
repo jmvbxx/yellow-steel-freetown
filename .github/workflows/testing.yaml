@@ -1,4 +1,4 @@
-name: My workflow
+name: rspec
 on: [push, pull_request]
 jobs:
   test:

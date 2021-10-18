@@ -1,8 +1,0 @@
-mission reporter should only reference mission and allow mission to include space_craft
-mission reporter should take a mission
-mission should not take a mission reporter
-move print_report out of mission into mission control
-mission control should have mission and mission reporter
-mission should have a space craft
-space craft should not have a mission
-move launch and launch step into mission control
