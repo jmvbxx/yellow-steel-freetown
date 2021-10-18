@@ -42,7 +42,7 @@ class Mission
 
   def name
     print 'What is the name of this mission? '
-    @name = gets.chomp
+    @name = STDIN.gets.chomp
   end
 
   def rename?
