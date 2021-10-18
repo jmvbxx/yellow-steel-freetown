@@ -34,7 +34,7 @@ class Mission
     @aborted = true
   end
 
-  def fuel_burned
+  def fuel_burned(elapsed_time)
     SpaceCraft::BURN_RATE_IN_L_PER_MIN * elapsed_time / SpaceCraft::SECONDS_PER_MINUTE
   end
 
@@ -42,7 +42,7 @@ class Mission
 
   def name
     print 'What is the name of this mission? '
-    @name = gets.chomp
+    @name = STDIN.gets.chomp
   end
 
   def rename?

@@ -1,53 +1,43 @@
 # frozen_string_literal: true
 
+require '../cli'
+require '../space_craft'
 require '../mission'
 
 RSpec.describe Mission do
-  let(:mission) { Mission.new('Minerva') }
-  context '#initialize' do
-    it 'starts with no elapsed time' do
-      expect(mission.elapsed_time).to eq 0
-    end
+  let(:mission) { Mission.new(name: 'Minerva') }
 
-    it 'starts with no distance traveled' do
-      expect(mission.distance_traveled).to eq 0
+  context '#continue?' do
+    it 'returns true' do
+      expect(mission.continue?).to be_truthy
     end
   end
 
-  context '#distance_traveled' do
-    it 'should have no distance_traveled if mission aborted' # do
-    #   expect(mission).to receive(:aborted).and_return(true)
-    #   expect(mission.distance_traveled).to eq 0
-    # end
-  end
-
-  context '#failed?' do
-    it 'should be true if mission aborted' do
-      expect(mission).to receive(:aborted).and_return(true)
-      expect(mission.failed?).to be_truthy
-    end
-
-    it 'should be true if rocket exploded' do
-      expect(mission).to receive(:exploded).and_return(true)
-      expect(mission.failed?).to be_truthy
-    end
-
-    it 'should be false if neither aborted or exploded' do
-      expect(mission).to receive(:aborted).and_return(false)
-      expect(mission).to receive(:exploded).and_return(false)
-      expect(mission.failed?).to be_falsey
+  context '#one_in_number' do
+    it 'produces a number in the range' do
+      expect(mission.one_in_number(1)).to be_truthy
     end
   end
 
-  context '#aborted' do
-    it 'should be false on a new mission' do
-      expect(mission.aborted).to be_falsey
+  context "#event_sequence" do
+    it "begins the launch sequence" do
+      expect(mission).to receive(:one_in_number).with(3).and_return(false)
+      allow($stdin).to receive(:gets).and_return('y')
+      expect { mission.event_sequence }.to output(
+        "Engage afterburner? (Y/n) Afterburner engaged!\nRelease support structures? (Y/n) Support structures released!\nPerform cross-checks? (Y/n) Cross-checks performed!\n"
+      ).to_stdout
     end
   end
 
-  context '#exploded' do
-    it 'should be false on a new mission' do
-      expect(mission.exploded).to be_falsey
+  context '#abort!' do
+    it 'returns true' do
+      expect(mission.abort!).to be_truthy
+    end
+  end
+
+  context '#fuel_burned' do
+    it 'correctly calculates fuel burned' do
+      expect(mission.fuel_burned(1)).to eq(2803)
     end
   end
 end
