@@ -34,7 +34,7 @@ class Mission
     @aborted = true
   end
 
-  def fuel_burned
+  def fuel_burned(elapsed_time)
     SpaceCraft::BURN_RATE_IN_L_PER_MIN * elapsed_time / SpaceCraft::SECONDS_PER_MINUTE
   end
 

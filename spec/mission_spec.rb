@@ -20,11 +20,8 @@ RSpec.describe Mission do
   end
 
   context "#event_sequence" do
-    before(:each) do
-      mission.one_in_number(99)
-    end
-
     it "begins the launch sequence" do
+      expect(mission).to receive(:one_in_number).with(3).and_return(false)
       allow($stdin).to receive(:gets).and_return('y')
       expect { mission.event_sequence }.to output(
         "Engage afterburner? (Y/n) Afterburner engaged!\nRelease support structures? (Y/n) Support structures released!\nPerform cross-checks? (Y/n) Cross-checks performed!\n"
@@ -39,13 +36,8 @@ RSpec.describe Mission do
   end
 
   context '#fuel_burned' do
-    before(:each) do
-      @elapsed_time = Mission.elapsed_time
-      @elapsed_time = 100
-    end
-
     it 'correctly calculates fuel burned' do
-      expect(mission.fuel_burned).to eq(100)
+      expect(mission.fuel_burned(1)).to eq(2803)
     end
   end
 end
