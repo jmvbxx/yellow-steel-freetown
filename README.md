@@ -1,3 +1,5 @@
+![Testing](https://github.com/jmvbxx/yellow-steel-freetown/actions/workflows/testing.yaml/badge.svg)
+
 ## yellow-steel-freetown
 
 ## Launch Requirements
