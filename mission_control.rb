@@ -46,7 +46,7 @@ class MissionControl
   def mission_report
     @total_distance_traveled = @missions.sum(&:distance_traveled)
     @total_elapsed_time = @missions.sum(&:elapsed_time)
-    @total_fuel_burned = @missions.sum(&:fuel_burned)
+    @total_fuel_burned = @missions.sum{ |mission| mission.fuel_burned(mission.elapsed_time) }
     @mission_reporter.print_summary
   end
 
