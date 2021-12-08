@@ -25,6 +25,7 @@ class MissionControl
 
   def launch_sequence
     @mission_plan.print_plan
+    engage_afterburner
     @mission.event_sequence
     launch
     @missions << @mission
@@ -56,6 +57,17 @@ class MissionControl
     self.class.retries += 1
     @mission = Mission.new
     launch_sequence
+  end
+
+  def engage_afterburner
+    return abort! unless @mission.continue? && prompt_user('Engage afterburner?')
+
+    if @mission.one_in_number(5)
+      puts 'Mission aborted!'
+      @mission.explosions += 1
+    else
+      puts 'Afterburner engaged!'
+    end
   end
 
   def launch
