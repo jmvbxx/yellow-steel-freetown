@@ -62,11 +62,11 @@ class MissionControl
   end
 
   def proceed?
-    abort! unless @mission.continue? && prompt_user('Would you like to proceed?')
+    @mission.abort! unless @mission.continue? && prompt_user('Would you like to proceed?')
   end
 
   def engage_afterburner
-    return abort! unless @mission.continue? && prompt_user('Engage afterburner?')
+    return @mission.abort! unless @mission.continue? && prompt_user('Engage afterburner?')
 
     if @mission.one_in_number(5)
       puts 'Mission aborted!'

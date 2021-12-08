@@ -14,7 +14,7 @@ RSpec.describe MissionControl do
   context 'integration' do
     it 'counts aborts' do
       expect(mission).to receive(:one_in_number).and_return(true)
-      expect($stdin).to receive(:gets).and_return('y').exactly(1).times
+      expect($stdin).to receive(:gets).and_return('y').exactly(2).times
       expect($stdin).to receive(:gets).and_return('n')
 
       mission_control.launch_sequence
