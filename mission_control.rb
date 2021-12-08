@@ -25,6 +25,8 @@ class MissionControl
 
   def launch_sequence
     @mission_plan.print_plan
+    @mission.name ||= name
+    proceed?
     engage_afterburner
     @mission.event_sequence
     launch
@@ -59,12 +61,18 @@ class MissionControl
     launch_sequence
   end
 
+  def proceed?
+    abort! unless @mission.continue? && prompt_user('Would you like to proceed?')
+  end
+
   def engage_afterburner
     return abort! unless @mission.continue? && prompt_user('Engage afterburner?')
 
     if @mission.one_in_number(5)
       puts 'Mission aborted!'
-      @mission.explosions += 1
+      @mission.aborts += 1
+      mission_report
+      proceed?
     else
       puts 'Afterburner engaged!'
     end
