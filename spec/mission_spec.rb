@@ -21,10 +21,9 @@ RSpec.describe Mission do
 
   context "#event_sequence" do
     it "begins the launch sequence" do
-      expect(mission).to receive(:one_in_number).with(3).and_return(false)
       allow($stdin).to receive(:gets).and_return('y')
       expect { mission.event_sequence }.to output(
-        "Engage afterburner? (Y/n) Afterburner engaged!\nRelease support structures? (Y/n) Support structures released!\nPerform cross-checks? (Y/n) Cross-checks performed!\n"
+        "Release support structures? (Y/n) Support structures released!\nPerform cross-checks? (Y/n) Cross-checks performed!\n"
       ).to_stdout
     end
   end

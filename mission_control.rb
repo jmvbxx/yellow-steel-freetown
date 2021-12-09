@@ -25,6 +25,9 @@ class MissionControl
 
   def launch_sequence
     @mission_plan.print_plan
+    @mission.name ||= name
+    proceed?
+    engage_afterburner
     @mission.event_sequence
     launch
     @missions << @mission
@@ -41,14 +44,14 @@ class MissionControl
     end
   end
 
-  private
-
   def mission_report
     @total_distance_traveled = @missions.sum(&:distance_traveled)
     @total_elapsed_time = @missions.sum(&:elapsed_time)
-    @total_fuel_burned = @missions.sum(&:fuel_burned)
+    @total_fuel_burned = @missions.sum{ |mission| mission.fuel_burned(mission.elapsed_time) }
     @mission_reporter.print_summary
   end
+
+  private
 
   def play_again?
     return @mission.abort! unless prompt_user('Would you like to launch again?')
@@ -56,6 +59,23 @@ class MissionControl
     self.class.retries += 1
     @mission = Mission.new
     launch_sequence
+  end
+
+  def proceed?
+    @mission.abort! unless @mission.continue? && prompt_user('Would you like to proceed?')
+  end
+
+  def engage_afterburner
+    return @mission.abort! unless @mission.continue? && prompt_user('Engage afterburner?')
+
+    if @mission.one_in_number(5)
+      puts 'Mission aborted!'
+      @mission.aborts += 1
+      mission_report
+      proceed?
+    else
+      puts 'Afterburner engaged!'
+    end
   end
 
   def launch

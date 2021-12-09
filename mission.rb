@@ -3,7 +3,7 @@
 class Mission
   include Cli
 
-  attr_accessor :aborts, :explosions, :space_craft, :elapsed_time, :distance_traveled
+  attr_accessor :aborts, :explosions, :space_craft, :elapsed_time, :distance_traveled, :name
 
   def initialize(name: nil, space_craft: SpaceCraft.new)
     @name = name
@@ -24,8 +24,6 @@ class Mission
   end
 
   def event_sequence
-    @name ||= name
-    engage_afterburner
     release_support_structures
     perform_cross_checks
   end
@@ -38,28 +36,15 @@ class Mission
     SpaceCraft::BURN_RATE_IN_L_PER_MIN * elapsed_time / SpaceCraft::SECONDS_PER_MINUTE
   end
 
-  private
-
   def name
     print 'What is the name of this mission? '
     @name = STDIN.gets.chomp
   end
 
+  private
+
   def rename?
     prompt_user('Do you want to rename your mission?')
-  end
-
-  def engage_afterburner
-    return abort! unless continue? && prompt_user('Engage afterburner?')
-
-    if one_in_number(3)
-      puts 'Mission aborted!'
-      @aborts += 1
-      name if rename?
-      event_sequence
-    else
-      puts 'Afterburner engaged!'
-    end
   end
 
   def release_support_structures
