@@ -2,7 +2,7 @@
 
 require '../space_craft'
 
-RSpec.describe Mission do
+RSpec.describe SpaceCraft do
   let(:space_craft) { SpaceCraft.new }
 
   context '#current_speed' do
