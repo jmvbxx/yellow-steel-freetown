@@ -2,6 +2,27 @@
 
 ## yellow-steel-freetown
 
+### Launch Instructions
+
+The command to launch this program is `ruby main.rb`
+
+### Testing
+
+From the `/spec` directory run the command `rspec .` to run the entire test suite.
+
+### Future Improvements
+
+1. Make larger numbers prettier by separating with `,`.
+2. I'd like to have a better formula for acceleration. Right now there is instant acceleration to the top speed of 1,500 km/h.
+3. I'd like to reconsider superfluous variables such as the `name` which is never used.
+4. Similar to the previous, the `fuel capacity` information is useless for the purposes of a mission.
+
+#### `name` variable
+
+After doing some investigation on the naming of space crafts vs the naming of missions, I determined that this is not a simple
+matter. I fell down the investigation rabbit hole trying to determine how names were assigned and what actually gets named vs
+what doesn't.
+
 ## Launch Requirements
 
 1. **Use Ruby**. A style guide can be found [here](https://github.com/bbatsov/ruby-style-guide). Use 2 soft-tabs.
