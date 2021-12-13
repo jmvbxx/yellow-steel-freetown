@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-require '../cli'
-require '../space_craft'
-require '../mission'
+require_relative 'spec_helper'
+require '../lib/cli'
+require '../lib/space_craft'
+require '../lib/mission'
 
 RSpec.describe Mission do
   let(:mission) { Mission.new(name: 'Minerva') }

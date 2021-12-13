@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require '../space_craft'
+require_relative 'spec_helper'
+require '../lib/space_craft'
 
 RSpec.describe SpaceCraft do
   let(:space_craft) { SpaceCraft.new }
