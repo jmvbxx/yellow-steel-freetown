@@ -5,7 +5,6 @@ require_relative 'mission_control'
 require_relative 'mission_plan'
 require_relative 'mission'
 require_relative 'space_craft'
-require 'pry'
 
 mission_control = MissionControl.new(mission: Mission.new)
 puts 'Welcome to yellow-steel-freetown!'
