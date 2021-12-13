@@ -4,7 +4,7 @@
 
 ### Launch Instructions
 
-The command to launch this program is `ruby main.rb`
+The command to launch this program is `ruby lib/main.rb`
 
 ### Testing
 
@@ -13,12 +13,13 @@ From within the `/spec` directory run the command `rspec .` to run the entire te
 ### Future Improvements
 
 1. Make larger numbers prettier by separating with `,`. For example, `1,000,000` vs `1000000`.
-2. I'd like to have a better formula for acceleration. Right now there is instant acceleration to the top speed of 1,500 km/h.
-3. I'd like to reconsider superfluous variables such as the `name` which is never used.
-4. Similar to the previous point, the `fuel capacity` information is useless for the purposes of a mission.
-5. I'd like to rework the math so that the mission ends at exactly 160.0km compared to right now where the mission ends when the distance travels is greater than or equal to 160. This results in always running the same amount of time but not the exact same distance traveled.
-6. It would be great to have a database store the results of each mission instead of just diplay the results on the screen.
-7. Lastly, utilize a framework such as `sinatra` to convert this CLI application into a web application (connecting to the database mentioned earlier).
+2. I'd like to have a better formula for acceleration. Right now there is instant acceleration to the top speed of approximately 1,500 km/h.
+3. I'd like to have a formula to calculate the `current fuel burn rate`. Right now it's a static value.
+4. I'd like to reconsider the requirement of asking for the variable `name` as it's never used.
+5. Similar to the previous point, the `fuel capacity` information is useless for the purposes of a mission.
+6. I'd like to rework the math so that the mission ends at exactly 160.0km compared to right now where the mission ends when the distance travels is greater than or equal to 160. This results in always running the same amount of time but not the exact same distance traveled.
+7. It would be great to have a database store the results of each mission instead of just display the results on the screen.
+8. Lastly, utilize a framework such as `sinatra` to convert this CLI application into a web application (connecting to the database mentioned earlier).
 
 ## Launch Requirements
 
