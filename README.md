@@ -2,6 +2,24 @@
 
 ## yellow-steel-freetown
 
+### Launch Instructions
+
+The command to launch this program is `ruby main.rb`
+
+### Testing
+
+From within the `/spec` directory run the command `rspec .` to run the entire test suite.
+
+### Future Improvements
+
+1. Make larger numbers prettier by separating with `,`. For example, `1,000,000` vs `1000000`.
+2. I'd like to have a better formula for acceleration. Right now there is instant acceleration to the top speed of 1,500 km/h.
+3. I'd like to reconsider superfluous variables such as the `name` which is never used.
+4. Similar to the previous point, the `fuel capacity` information is useless for the purposes of a mission.
+5. I'd like to rework the math so that the mission ends at exactly 160.0km compared to right now where the mission ends when the distance travels is greater than or equal to 160. This results in always running the same amount of time but not the exact same distance traveled.
+6. It would be great to have a database store the results of each mission instead of just diplay the results on the screen.
+7. Lastly, utilize a framework such as `sinatra` to convert this CLI application into a web application (connecting to the database mentioned earlier).
+
 ## Launch Requirements
 
 1. **Use Ruby**. A style guide can be found [here](https://github.com/bbatsov/ruby-style-guide). Use 2 soft-tabs.
