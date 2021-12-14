@@ -3,6 +3,9 @@
 module Cli
   def prompt_user(prompt)
     print "#{prompt} (Y/n) "
-    STDIN.gets.chomp.downcase.start_with?('y')
+    input = STDIN.gets.chomp.downcase
+    input = "y" if input.empty?
+
+    input.start_with?("y")
   end
 end
